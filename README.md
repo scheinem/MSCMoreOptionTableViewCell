@@ -16,7 +16,7 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
     MSCMoreOptionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
         cell = [[MSCMoreOptionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-	cell.delegate = self;
+        cell.delegate = self;
     }
     cell.textLabel.text = @"Cell";
     
@@ -39,6 +39,14 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
 ```objective-c
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 ```
+
+## Customizing
+
+The 'More' button can be customized using the following three properties of MSCMoreOptionTableViewCell:
+
+* NSString *moreOptionButtonTitle
+* UIColor *moreOptionButtonBackgroundColor
+* UIColor *moreOptionButtonTitleColor
 
 ## Credits
 

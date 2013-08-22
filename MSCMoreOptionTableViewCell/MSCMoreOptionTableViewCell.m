@@ -69,7 +69,8 @@
                 /*
                  * Check if the view is the "swipe to delete" container view.
                  */
-                if (NSStringFromClass([layer.delegate class]).hash == 1475656765) {
+                NSString *name = NSStringFromClass([layer.delegate class]);
+                if ([name hasPrefix:@"UI"] && [name hasSuffix:@"ConfirmationView"]) {
                     if (self.moreOptionButton) {
                         swipeToDeleteControlVisible = YES;
                     }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B78F0FB917C611FD000F8B94 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B78F0FB817C611FD000F8B94 /* QuartzCore.framework */; };
+		B78F0FBB17C6120A000F8B94 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B78F0FBA17C6120A000F8B94 /* CoreGraphics.framework */; };
 		B7D0EFC417C254DB009972B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D0EFC317C254DB009972B8 /* Foundation.framework */; };
 		B7D0EFC917C254DB009972B8 /* MSCMoreOptionTableViewCell.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B7D0EFC817C254DB009972B8 /* MSCMoreOptionTableViewCell.h */; };
 		B7D0EFCB17C254DB009972B8 /* MSCMoreOptionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B7D0EFCA17C254DB009972B8 /* MSCMoreOptionTableViewCell.m */; };
@@ -27,6 +29,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B78F0FB817C611FD000F8B94 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B78F0FBA17C6120A000F8B94 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		B7D0EFC017C254DB009972B8 /* libMSCMoreOptionTableViewCell.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMSCMoreOptionTableViewCell.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7D0EFC317C254DB009972B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B7D0EFC717C254DB009972B8 /* MSCMoreOptionTableViewCell-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MSCMoreOptionTableViewCell-Prefix.pch"; sourceTree = "<group>"; };
@@ -41,8 +45,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B7D0EFF917C25605009972B8 /* UIKit.framework in Frameworks */,
+				B78F0FBB17C6120A000F8B94 /* CoreGraphics.framework in Frameworks */,
 				B7D0EFC417C254DB009972B8 /* Foundation.framework in Frameworks */,
+				B78F0FB917C611FD000F8B94 /* QuartzCore.framework in Frameworks */,
+				B7D0EFF917C25605009972B8 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +75,9 @@
 		B7D0EFC217C254DB009972B8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B78F0FBA17C6120A000F8B94 /* CoreGraphics.framework */,
 				B7D0EFC317C254DB009972B8 /* Foundation.framework */,
+				B78F0FB817C611FD000F8B94 /* QuartzCore.framework */,
 				B7D0EFF817C25605009972B8 /* UIKit.framework */,
 			);
 			name = Frameworks;

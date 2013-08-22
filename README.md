@@ -1,7 +1,7 @@
 MSCMoreOptionTableViewCell
 ==========================
 
-Drop-in solution to achieve the "More" button in an UITableView's "swipe to delete"-menu (as seen in the Mail.app) by extending Apple's own "swipe-to-delete"-implemtation and not rewriting it, so UITableView's standard behaviour isn't changed.
+Drop-in solution to achieve the "More" button in an UITableView's "swipe to delete"-menu (as seen in the Mail.app) by extending Apple's own "swipe to delete"-implemtation and not rewriting it, so UITableView's standard behaviour isn't changed.
 
 ![Screenshot](https://raw.github.com/scheinem/MSCMoreOptionTableViewCell/master/MSCMoreOptionTableViewCell.png)
 
@@ -47,6 +47,10 @@ The 'More' button can be customized using the following three properties of MSCM
 * NSString *moreOptionButtonTitle
 * UIColor *moreOptionButtonBackgroundColor
 * UIColor *moreOptionButtonTitleColor
+
+## Compatibility
+
+MSCMoreOptionTableViewCell is compatible to iOS 7 and above. As many other solutions that extends existing functionalities it depends on existing vendor code, therefore if Apple change it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
 
 ## Credits
 

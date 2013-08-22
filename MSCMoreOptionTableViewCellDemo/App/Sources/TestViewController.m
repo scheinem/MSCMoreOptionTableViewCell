@@ -95,4 +95,8 @@
     NSLog(@"MORE button pushed in row at: %@", indexPath.description);
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"More";
+}
+
 @end

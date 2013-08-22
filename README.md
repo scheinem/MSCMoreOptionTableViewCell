@@ -34,23 +34,36 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
 
 ## Delegate
 
-### MSCMoreOptionTableViewCell's "More" button has been pressed
+### Required
 
 ```objective-c
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 ```
 
+### Optional
+
+```objective-c
+- (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+```
+
+```objective-c
+- (UIColor *)tableView:(UITableView *)tableView titleColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+```
+
+```objective-c
+- (UIColor *)tableView:(UITableView *)tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+```
+
 ## Customizing
 
-The 'More' button can be customized using the following three properties of MSCMoreOptionTableViewCell:
+The 'More' button can be customized using the three optional delegate methods mentioned above.
 
-* NSString *moreOptionButtonTitle
-* UIColor *moreOptionButtonBackgroundColor
-* UIColor *moreOptionButtonTitleColor
+## Compatibility and Requirements
 
-## Compatibility
+* iOS 7 or newer
+* XCode 5 or newer
 
-MSCMoreOptionTableViewCell is compatible to iOS 7 and above. As many other solutions that extends existing functionalities it depends on existing vendor code, therefore if Apple change it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
+As many other solutions that extend existing functionalities MSCMoreOptionTableViewCell depends on existing vendor code, therefore if Apple change it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
 
 ## Credits
 

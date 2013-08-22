@@ -6,9 +6,28 @@
 //  Copyright (c) 2013 Manfred Scheiner (@scheinem). All rights reserved.
 //
 
-@protocol MSCMoreOptionTableViewCellDelegate
+@protocol MSCMoreOptionTableViewCellDelegate<NSObject>
 
 @required
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
+
+@optional
+/*
+ * If not implemented, returning nil or an empty string the "More" button will have
+ * no title and it's width will be 60 points.
+ */
+- (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+
+/*
+ * If not implemented or returning nil the "More" button will have [UIColor whiteColor]
+ * as titleColor;
+ */
+- (UIColor *)tableView:(UITableView *)tableView titleColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+
+/*
+ * If not implemented or returning nil the "More" button will have [UIColor lightGrayColor]
+ * as backgroundColor;
+ */
+- (UIColor *)tableView:(UITableView *)tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

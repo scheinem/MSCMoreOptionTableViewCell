@@ -24,10 +24,6 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        _moreOptionButtonTitle = @"More";
-        _moreOptionButtonBackgroundColor = [UIColor lightGrayColor];
-        _moreOptionButtonTitleColor = [UIColor whiteColor];
-        
         _moreOptionButton = nil;
         
         /* 
@@ -79,9 +75,34 @@
                         
                         self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
                         [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-                        self.moreOptionButton.backgroundColor = self.moreOptionButtonBackgroundColor;
-                        [self.moreOptionButton setTitleColor:self.moreOptionButtonTitleColor forState:UIControlStateNormal];
-                        [self setMoreOptionButtonTitle:self.moreOptionButtonTitle inDeleteConfirmationView:deleteConfirmationView];
+                        
+                        // Try to get title from delegate
+                        if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
+                            [self setMoreOptionButtonTitle:[self.delegate tableView:[self tableView] titleForMoreOptionButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]] inDeleteConfirmationView:deleteConfirmationView];
+                        }
+                        else {
+                            [self setMoreOptionButtonTitle:nil inDeleteConfirmationView:deleteConfirmationView];
+                        }
+                        
+                        // Try to get titleColor from delegate
+                        UIColor *titleColor = nil;
+                        if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
+                            titleColor = [self.delegate tableView:[self tableView] titleColorForMoreOptionButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                        }
+                        if (titleColor == nil) {
+                            titleColor = [UIColor whiteColor];
+                        }
+                        [self.moreOptionButton setTitleColor:titleColor forState:UIControlStateNormal];
+                        
+                        // Try to get backgroundColor from delegate
+                        UIColor *backgroundColor = nil;
+                        if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
+                            backgroundColor = [self.delegate tableView:[self tableView] backgroundColorForMoreOptionButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                        }
+                        if (backgroundColor == nil) {
+                            backgroundColor = [UIColor lightGrayColor];
+                        }
+                        [self.moreOptionButton setBackgroundColor:backgroundColor];
                         
                         [deleteConfirmationView addSubview:self.moreOptionButton];
                         
@@ -93,33 +114,6 @@
                 self.moreOptionButton = nil;
             }
         }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////
-#pragma mark - MSCMoreOptionTableViewCell
-////////////////////////////////////////////////////////////////////////
-
-- (void)setMoreOptionButtonTitle:(NSString *)moreOptionButtonTitle {
-    if (![_moreOptionButtonTitle isEqualToString:moreOptionButtonTitle]) {
-        if (self.moreOptionButton) {
-        [self.moreOptionButton setTitle:moreOptionButtonTitle forState:UIControlStateNormal];
-        }
-        _moreOptionButtonTitle = moreOptionButtonTitle;
-    }
-}
-
-- (void)setMoreOptionButtonBackgroundColor:(UIColor *)moreOptionButtonBackgroundColor {
-    if (![_moreOptionButtonBackgroundColor isEqual:moreOptionButtonBackgroundColor]) {
-        self.moreOptionButton.backgroundColor = moreOptionButtonBackgroundColor;
-        _moreOptionButtonBackgroundColor = moreOptionButtonBackgroundColor;
-    }
-}
-
-- (void)setMoreOptionButtonTitleColor:(UIColor *)moreOptionButtonTitleColor {
-    if (![_moreOptionButtonTitleColor isEqual:moreOptionButtonTitleColor]) {
-        [self.moreOptionButton setTitleColor:moreOptionButtonTitleColor forState:UIControlStateNormal];
-        _moreOptionButtonTitleColor = moreOptionButtonTitleColor;
     }
 }
 
@@ -149,7 +143,7 @@
 - (void)setMoreOptionButtonTitle:(NSString *)title inDeleteConfirmationView:(UIView *)deleteConfirmationView {
     CGFloat priorMoreOptionButtonFrameWidth = self.moreOptionButton.frame.size.width;
     
-    [self.moreOptionButton setTitle:self.moreOptionButtonTitle forState:UIControlStateNormal];
+    [self.moreOptionButton setTitle:title forState:UIControlStateNormal];
     [self.moreOptionButton sizeToFit];
     
     CGRect moreOptionButtonFrame = CGRectZero;

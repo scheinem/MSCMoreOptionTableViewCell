@@ -61,7 +61,7 @@ The 'More' button can be customized using the three optional delegate methods me
 ## Compatibility and Requirements
 
 * iOS 7 or newer
-* XCode 5 or newer
+* Xcode 5 or newer
 
 As many other solutions that extend existing functionalities MSCMoreOptionTableViewCell depends on existing vendor code, therefore if Apple change it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
 

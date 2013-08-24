@@ -24,6 +24,8 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
 }
 ```
 
+If you are using **Storyboards** in your project then take a look at the demo project which includes an working example using a **Storyboard**.
+
 ## Add to your project
 
 1. Add MSCMoreOptionTableViewCell.xcodeproj as subproject.
@@ -67,7 +69,7 @@ As many other solutions that extend existing functionalities MSCMoreOptionTableV
 
 ## Credits
 
-MSCMoreOptionTableViewCell was created by [Manfred Scheiner](https://github.com/scheinem/) ([@scheinem](http://twitter.com/scheinem) - [scheinem.com](http://scheinem.com)).
+MSCMoreOptionTableViewCell was created by [Manfred Scheiner](https://github.com/scheinem/) ([@scheinem](http://twitter.com/scheinem) - [scheinem.com](http://scheinem.com)). Of course there is also a [full list of all contributors](https://github.com/scheinem/MSCMoreOptionTableViewCell/graphs/contributors) available.
 
 ## License
 

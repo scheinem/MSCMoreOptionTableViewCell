@@ -10,6 +10,6 @@
 
 @interface MSCMoreOptionTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) id<MSCMoreOptionTableViewCellDelegate> delegate;
+@property (nonatomic, weak) id<MSCMoreOptionTableViewCellDelegate> delegate;
 
 @end

@@ -147,7 +147,21 @@
     
     CGRect moreOptionButtonFrame = CGRectZero;
     moreOptionButtonFrame.size.width = self.moreOptionButton.frame.size.width + 30.f;
-    moreOptionButtonFrame.size.height = deleteConfirmationView.frame.size.height;
+    /*
+     * Look for the "Delete" button to apply it's height also to the "More" button.
+     * If it can't be found there is a fallback to the deleteConfirmationView's height.
+     */
+    for (UIButton *deleteConfirmationButton in deleteConfirmationView.subviews) {
+        NSString *name = NSStringFromClass([deleteConfirmationButton class]);
+        if ([name hasPrefix:@"UI"] && [name rangeOfString:@"Delete"].length > 0 &&
+            [name hasSuffix:@"Button"]) {
+            moreOptionButtonFrame.size.height = ((UIView *)deleteConfirmationButton).frame.size.height;
+            break;
+        }
+    }
+    if (moreOptionButtonFrame.size.height == 0.f) {
+        moreOptionButtonFrame.size.height = deleteConfirmationView.frame.size.height;
+    }
     self.moreOptionButton.frame = moreOptionButtonFrame;
     
     CGRect rect = deleteConfirmationView.frame;

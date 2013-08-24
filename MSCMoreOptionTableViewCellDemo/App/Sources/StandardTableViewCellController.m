@@ -1,19 +1,19 @@
 //
-//  TestViewController.m
+//  StandardTableViewCellController.m
 //  MSCMoreOptionTableViewCellDemo
 //
 //  Created by Manfred Scheiner (@scheinem) on 22.08.13.
 //  Copyright (c) 2013 Manfred Scheiner (@scheinem). All rights reserved.
 //
 
-#import "TestViewController.h"
+#import "StandardTableViewCellController.h"
 #import "MSCMoreOptionTableViewCell.h"
 
-@interface TestViewController () <MSCMoreOptionTableViewCellDelegate>
+@interface StandardTableViewCellController () <MSCMoreOptionTableViewCellDelegate>
 
 @end
 
-@implementation TestViewController
+@implementation StandardTableViewCellController
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Initializer

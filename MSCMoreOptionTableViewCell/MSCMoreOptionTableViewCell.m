@@ -44,7 +44,7 @@
 }
 
 - (void)dealloc {
-    [self.cellScrollView removeObserver:self forKeyPath:@"sublayers" context:nil];
+    [self.cellScrollView.layer removeObserver:self forKeyPath:@"sublayers" context:nil];
 }
 
 ////////////////////////////////////////////////////////////////////////

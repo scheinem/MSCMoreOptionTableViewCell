@@ -80,6 +80,7 @@
                     }
                     else {
                         UIView *deleteConfirmationView = layer.delegate;
+                        UITableView *tableView = [self tableView];
                         
                         self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
                         [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -88,7 +89,7 @@
                         if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
                             UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
                             if (deleteConfirmationButton) {
-                                UIColor *deleteButtonColor = [self.delegate tableView:[self tableView] backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                                UIColor *deleteButtonColor = [self.delegate tableView:tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
                                 if (deleteButtonColor) {
                                     deleteConfirmationButton.backgroundColor = deleteButtonColor;
                                 }
@@ -99,7 +100,7 @@
                         if ([self.delegate respondsToSelector:@selector(tableView:titleColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
                             UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
                             if (deleteConfirmationButton) {
-                                UIColor *deleteButtonTitleColor = [self.delegate tableView:[self tableView] titleColorForDeleteConfirmationButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                                UIColor *deleteButtonTitleColor = [self.delegate tableView:tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
                                 if (deleteButtonTitleColor) {
                                     for (UIView *label in deleteConfirmationButton.subviews) {
                                         if ([label isKindOfClass:[UILabel class]]) {
@@ -113,7 +114,7 @@
                         
                         // Try to get title from delegate
                         if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
-                            [self setMoreOptionButtonTitle:[self.delegate tableView:[self tableView] titleForMoreOptionButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]] inDeleteConfirmationView:deleteConfirmationView];
+                            [self setMoreOptionButtonTitle:[self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]] inDeleteConfirmationView:deleteConfirmationView];
                         }
                         else {
                             [self setMoreOptionButtonTitle:nil inDeleteConfirmationView:deleteConfirmationView];
@@ -122,7 +123,7 @@
                         // Try to get titleColor from delegate
                         UIColor *titleColor = nil;
                         if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
-                            titleColor = [self.delegate tableView:[self tableView] titleColorForMoreOptionButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                            titleColor = [self.delegate tableView:tableView titleColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
                         }
                         if (titleColor == nil) {
                             titleColor = [UIColor whiteColor];
@@ -132,7 +133,7 @@
                         // Try to get backgroundColor from delegate
                         UIColor *backgroundColor = nil;
                         if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
-                            backgroundColor = [self.delegate tableView:[self tableView] backgroundColorForMoreOptionButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                            backgroundColor = [self.delegate tableView:tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
                         }
                         if (backgroundColor == nil) {
                             backgroundColor = [UIColor lightGrayColor];

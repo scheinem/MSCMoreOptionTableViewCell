@@ -84,13 +84,29 @@
                         self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
                         [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
                         
-                        // Try to get Delete backgroundColor from delegate
+                        // Try to get "Delete" backgroundColor from delegate
                         if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
                             UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
                             if (deleteConfirmationButton) {
                                 UIColor *deleteButtonColor = [self.delegate tableView:[self tableView] backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
                                 if (deleteButtonColor) {
                                     deleteConfirmationButton.backgroundColor = deleteButtonColor;
+                                }
+                            }
+                        }
+                        
+                        // Try to get "Delete" titleColor from Delegate
+                        if ([self.delegate respondsToSelector:@selector(tableView:titleColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
+                            UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
+                            if (deleteConfirmationButton) {
+                                UIColor *deleteButtonTitleColor = [self.delegate tableView:[self tableView] titleColorForDeleteConfirmationButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                                if (deleteButtonTitleColor) {
+                                    for (UIView *label in deleteConfirmationButton.subviews) {
+                                        if ([label isKindOfClass:[UILabel class]]) {
+                                            [(UILabel*)label setTextColor:deleteButtonTitleColor];
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }

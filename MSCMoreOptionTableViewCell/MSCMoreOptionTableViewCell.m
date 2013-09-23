@@ -10,6 +10,15 @@
 
 @interface MSCMoreOptionTableViewCell ()
 
+/**
+ *  This method searches a DeleteConfirmationButton in a given DeleteConfirmationView
+ *
+ *  @param deleteConfirmationView A DeleteConfirmationView
+ *
+ *  @return A DeleteConfirmationButton or nil if the button could not be found.
+ */
+- (UIButton *)deleteButtonFromDeleteConfirmationView:(UIView *)deleteConfirmationView;
+
 @property (nonatomic, strong) UIButton *moreOptionButton;
 @property (nonatomic, strong) UIScrollView *cellScrollView;
 
@@ -75,6 +84,17 @@
                         self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
                         [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
                         
+                        // Try to get Delete backgroundColor from delegate
+                        if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
+                            UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
+                            if (deleteConfirmationButton) {
+                                UIColor *deleteButtonColor = [self.delegate tableView:[self tableView] backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+                                if (deleteButtonColor) {
+                                    deleteConfirmationButton.backgroundColor = deleteButtonColor;
+                                }
+                            }
+                        }
+                        
                         // Try to get title from delegate
                         if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
                             [self setMoreOptionButtonTitle:[self.delegate tableView:[self tableView] titleForMoreOptionButtonForRowAtIndexPath:[[self tableView] indexPathForCell:self]] inDeleteConfirmationView:deleteConfirmationView];
@@ -120,6 +140,16 @@
 #pragma mark - private methods
 ////////////////////////////////////////////////////////////////////////
 
+- (UIButton *)deleteButtonFromDeleteConfirmationView:(UIView *)deleteConfirmationView {
+    for (UIButton *deleteConfirmationButton in deleteConfirmationView.subviews) {
+        NSString *name = NSStringFromClass([deleteConfirmationButton class]);
+        if ([name hasPrefix:@"UI"] && [name rangeOfString:@"Delete"].length > 0 && [name hasSuffix:@"Button"]) {
+            return deleteConfirmationButton;
+        }
+    }
+    return nil;
+}
+
 - (void)moreOptionButtonPressed:(id)sender {
     if (self.delegate) {
         [self.delegate tableView:[self tableView] moreOptionButtonPressedInRowAtIndexPath:[[self tableView] indexPathForCell:self]];
@@ -151,14 +181,11 @@
      * Look for the "Delete" button to apply it's height also to the "More" button.
      * If it can't be found there is a fallback to the deleteConfirmationView's height.
      */
-    for (UIButton *deleteConfirmationButton in deleteConfirmationView.subviews) {
-        NSString *name = NSStringFromClass([deleteConfirmationButton class]);
-        if ([name hasPrefix:@"UI"] && [name rangeOfString:@"Delete"].length > 0 &&
-            [name hasSuffix:@"Button"]) {
-            moreOptionButtonFrame.size.height = ((UIView *)deleteConfirmationButton).frame.size.height;
-            break;
-        }
+    UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
+    if (deleteConfirmationButton) {
+        moreOptionButtonFrame.size.height = deleteConfirmationButton.frame.size.height;
     }
+
     if (moreOptionButtonFrame.size.height == 0.f) {
         moreOptionButtonFrame.size.height = deleteConfirmationView.frame.size.height;
     }

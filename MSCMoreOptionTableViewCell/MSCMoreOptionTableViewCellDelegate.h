@@ -30,4 +30,9 @@
  */
 - (UIColor *)tableView:(UITableView *)tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
+/*
+ * If not implemented or returning nil the "Delete" button will have the default backgroundColor;
+ */
+- (UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+
 @end

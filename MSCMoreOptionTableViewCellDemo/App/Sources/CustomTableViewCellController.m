@@ -96,4 +96,8 @@
     return @"More";
 }
 
+-(UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [UIColor colorWithRed:0.18f green:0.67f blue:0.84f alpha:1.0f];
+}
+
 @end

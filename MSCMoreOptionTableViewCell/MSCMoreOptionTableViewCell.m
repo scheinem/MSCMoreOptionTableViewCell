@@ -131,7 +131,9 @@
                         }
                         [self.moreOptionButton setBackgroundColor:backgroundColor];
                         
-                        [deleteConfirmationView addSubview:self.moreOptionButton];
+                        if(!_isMoreOptionHidden) {
+                            [deleteConfirmationView addSubview:self.moreOptionButton];
+                        }
                         
                         break;
                     }
@@ -204,8 +206,10 @@
     self.moreOptionButton.frame = moreOptionButtonFrame;
     
     CGRect rect = deleteConfirmationView.frame;
-    rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
-    rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
+    if(!_isMoreOptionHidden){
+        rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
+        rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
+    }
     deleteConfirmationView.frame = rect;
 }
 

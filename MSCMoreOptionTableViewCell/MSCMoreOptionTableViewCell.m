@@ -131,7 +131,7 @@
                         }
                         [self.moreOptionButton setBackgroundColor:backgroundColor];
                         
-                        if(!_isMoreOptionHidden) {
+                        if([self isMoreOptionVisible]) {
                             [deleteConfirmationView addSubview:self.moreOptionButton];
                         }
                         
@@ -206,7 +206,7 @@
     self.moreOptionButton.frame = moreOptionButtonFrame;
     
     CGRect rect = deleteConfirmationView.frame;
-    if(!_isMoreOptionHidden){
+    if([self isMoreOptionVisible]){
         rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
         rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
     }
@@ -228,6 +228,15 @@
             break;
         }
     }
+}
+
+-(BOOL)isMoreOptionVisible {
+   UITableView *tableView = [self tableView];
+   BOOL isMoreOptionVisible = YES;
+    if([_delegate respondsToSelector:@selector(tableView:isMoreOptionButtonVisibleForIndexPath:)])
+        isMoreOptionVisible = [_delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
+
+    return isMoreOptionVisible;
 }
 
 @end

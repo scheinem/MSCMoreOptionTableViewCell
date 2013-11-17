@@ -232,11 +232,16 @@
 
 -(BOOL)isMoreOptionVisible {
    UITableView *tableView = [self tableView];
-   BOOL isMoreOptionVisible = YES;
-    if([_delegate respondsToSelector:@selector(tableView:isMoreOptionButtonVisibleForIndexPath:)])
-        isMoreOptionVisible = [_delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
+    NSString *moreTitle = nil;
+    if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)])
+        moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
 
-    return isMoreOptionVisible;
+    return [self isTitleValid:moreTitle];
+}
+
+-(BOOL)isTitleValid:(NSString *)title {
+    return title != nil &&
+           [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
 }
 
 @end

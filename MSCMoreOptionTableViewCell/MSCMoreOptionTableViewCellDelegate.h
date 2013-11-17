@@ -16,13 +16,8 @@
 // "More button"
 
 /*
- * If not implemented, the "More" button will be visible.
- */
-- (BOOL)tableView:(UITableView *)tableView isMoreOptionButtonVisibleForRowAtIndexPath:(NSIndexPath *)indexPath;
-
-/*
- * If not implemented, returning nil or an empty string the "More" button will have
- * no title and it's width will be 60 points.
+ * If not implemented, returning nil or an empty string the "More" button will
+ * not be visible.
  */
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 

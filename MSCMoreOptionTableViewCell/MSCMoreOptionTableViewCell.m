@@ -131,7 +131,9 @@
                         }
                         [self.moreOptionButton setBackgroundColor:backgroundColor];
                         
-                        [deleteConfirmationView addSubview:self.moreOptionButton];
+                        if([self isMoreOptionVisible]) {
+                            [deleteConfirmationView addSubview:self.moreOptionButton];
+                        }
                         
                         break;
                     }
@@ -204,8 +206,10 @@
     self.moreOptionButton.frame = moreOptionButtonFrame;
     
     CGRect rect = deleteConfirmationView.frame;
-    rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
-    rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
+    if([self isMoreOptionVisible]){
+        rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
+        rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
+    }
     deleteConfirmationView.frame = rect;
 }
 
@@ -224,6 +228,20 @@
             break;
         }
     }
+}
+
+-(BOOL)isMoreOptionVisible {
+   UITableView *tableView = [self tableView];
+    NSString *moreTitle = nil;
+    if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)])
+        moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
+
+    return [self isTitleValid:moreTitle];
+}
+
+-(BOOL)isTitleValid:(NSString *)title {
+    return title != nil &&
+           [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
 }
 
 @end

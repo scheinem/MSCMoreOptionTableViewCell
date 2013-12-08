@@ -16,32 +16,34 @@
 // "More button"
 
 /*
- * If not implemented, returning nil or an empty string the "More" button will
- * not be visible.
+ * If not implemented or returning nil the "More" button will not be created and the
+ * cell will act like a common UITableViewCell.
+ *
+ * The "More" button also supports multiline titles.
  */
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
  * If not implemented or returning nil the "More" button will have [UIColor whiteColor]
- * as titleColor;
+ * as titleColor.
  */
 - (UIColor *)tableView:(UITableView *)tableView titleColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
  * If not implemented or returning nil the "More" button will have [UIColor lightGrayColor]
- * as backgroundColor;
+ * as backgroundColor.
  */
 - (UIColor *)tableView:(UITableView *)tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 // "Delete button"
 
 /*
- * If not implemented or returning nil the "Delete" button will have the default backgroundColor;
+ * If not implemented or returning nil the "Delete" button will have the default backgroundColor.
  */
 - (UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented or returning nil the "Delete" button will have the default titleColor;
+ * If not implemented or returning nil the "Delete" button will have the default titleColor.
  */
 - (UIColor *)tableView:(UITableView *)tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 

@@ -53,7 +53,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"sublayers"]) {
-        /* 
+        /*
          * Using '==' instead of 'isEqual:' to compare the layer's delegate and the cell's contentScrollView
          * because it must be the same instance and not an equal one.
          */
@@ -72,9 +72,6 @@
                     else {
                         UIView *deleteConfirmationView = layer.delegate;
                         UITableView *tableView = [self tableView];
-                        
-                        self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
-                        [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
                         
                         // Try to get "Delete" backgroundColor from delegate
                         if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
@@ -103,35 +100,40 @@
                             }
                         }
                         
-                        // Try to get "More" title from delegate
-                        if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
+                        if ([self moreOptionButtonTitle].length > 0) {
+                            self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
+                            [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+                            
+                            // Set "More" button's numberOfLines to 0 to enable support for multiline titles.
+                            self.moreOptionButton.titleLabel.numberOfLines = 0;
+                            
+                            /*
+                             * Get "More" title from delegate. Doesn't have to check if delegate responds
+                             * because this must be otherwise the "if"-clause wouldn't have been entered.
+                             */
                             [self setMoreOptionButtonTitle:[self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]] inDeleteConfirmationView:deleteConfirmationView];
-                        }
-                        else {
-                            [self setMoreOptionButtonTitle:nil inDeleteConfirmationView:deleteConfirmationView];
-                        }
-                        
-                        // Try to get "More" titleColor from delegate
-                        UIColor *titleColor = nil;
-                        if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
-                            titleColor = [self.delegate tableView:tableView titleColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
-                        }
-                        if (titleColor == nil) {
-                            titleColor = [UIColor whiteColor];
-                        }
-                        [self.moreOptionButton setTitleColor:titleColor forState:UIControlStateNormal];
-                        
-                        // Try to get "More" backgroundColor from delegate
-                        UIColor *backgroundColor = nil;
-                        if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
-                            backgroundColor = [self.delegate tableView:tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
-                        }
-                        if (backgroundColor == nil) {
-                            backgroundColor = [UIColor lightGrayColor];
-                        }
-                        [self.moreOptionButton setBackgroundColor:backgroundColor];
-                        
-                        if([self isMoreOptionVisible]) {
+                            
+                            // Try to get "More" titleColor from delegate
+                            UIColor *titleColor = nil;
+                            if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
+                                titleColor = [self.delegate tableView:tableView titleColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
+                            }
+                            if (titleColor == nil) {
+                                titleColor = [UIColor whiteColor];
+                            }
+                            [self.moreOptionButton setTitleColor:titleColor forState:UIControlStateNormal];
+                            
+                            // Try to get "More" backgroundColor from delegate
+                            UIColor *backgroundColor = nil;
+                            if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
+                                backgroundColor = [self.delegate tableView:tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
+                            }
+                            if (backgroundColor == nil) {
+                                backgroundColor = [UIColor lightGrayColor];
+                            }
+                            [self.moreOptionButton setBackgroundColor:backgroundColor];
+                            
+                            // Add the "More" button to the cell's view hirarchy
                             [deleteConfirmationView addSubview:self.moreOptionButton];
                         }
                         
@@ -199,17 +201,15 @@
     if (deleteConfirmationButton) {
         moreOptionButtonFrame.size.height = deleteConfirmationButton.frame.size.height;
     }
-
+    
     if (moreOptionButtonFrame.size.height == 0.f) {
         moreOptionButtonFrame.size.height = deleteConfirmationView.frame.size.height;
     }
     self.moreOptionButton.frame = moreOptionButtonFrame;
     
     CGRect rect = deleteConfirmationView.frame;
-    if([self isMoreOptionVisible]){
-        rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
-        rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
-    }
+    rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
+    rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
     deleteConfirmationView.frame = rect;
 }
 
@@ -230,18 +230,19 @@
     }
 }
 
--(BOOL)isMoreOptionVisible {
-   UITableView *tableView = [self tableView];
+- (NSString *)moreOptionButtonTitle {
+    UITableView *tableView = [self tableView];
+    
     NSString *moreTitle = nil;
-    if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)])
+    if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
         moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
-
-    return [self isTitleValid:moreTitle];
+    }
+    
+    return [self isMoreOptionButtonTitleValid:moreTitle] ? moreTitle : nil;
 }
 
--(BOOL)isTitleValid:(NSString *)title {
-    return title != nil &&
-           [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
+- (BOOL)isMoreOptionButtonTitleValid:(NSString *)title {
+    return title != nil && [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
 }
 
 @end

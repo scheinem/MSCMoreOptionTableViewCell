@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "CustomTableViewCellController.h"
+#import "StoryboardTableViewCellController.h"
 
 @implementation AppDelegate
 

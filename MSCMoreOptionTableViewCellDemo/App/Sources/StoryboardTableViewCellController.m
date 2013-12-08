@@ -6,14 +6,14 @@
 //  Copyright (c) 2013 Manfred Scheiner (@scheinem). All rights reserved.
 //
 
-#import "CustomTableViewCellController.h"
+#import "StoryboardTableViewCellController.h"
 #import "MSCMoreOptionTableViewCell.h"
 
-@interface CustomTableViewCellController () <MSCMoreOptionTableViewCellDelegate>
+@interface StoryboardTableViewCellController () <MSCMoreOptionTableViewCellDelegate>
 
 @end
 
-@implementation CustomTableViewCellController
+@implementation StoryboardTableViewCellController
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Initializer
@@ -94,10 +94,6 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
     return @"More";
-}
-
--(UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [UIColor colorWithRed:0.18f green:0.67f blue:0.84f alpha:1.0f];
 }
 
 @end

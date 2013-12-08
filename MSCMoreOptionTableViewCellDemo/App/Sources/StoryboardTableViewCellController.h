@@ -6,6 +6,6 @@
 //  Copyright (c) 2013 Manfred Scheiner (@scheinem). All rights reserved.
 //
 
-@interface CustomTableViewCellController : UITableViewController
+@interface StoryboardTableViewCellController : UITableViewController
 
 @end

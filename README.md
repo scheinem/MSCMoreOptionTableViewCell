@@ -1,7 +1,7 @@
 MSCMoreOptionTableViewCell
 ==========================
 
-Drop-in solution to achieve the "More" button in an UITableView's "swipe to delete"-menu (as seen in the Mail.app) by extending Apple's own "swipe to delete"-implemtation and not rewriting it, so UITableView's standard behaviour isn't changed.
+Drop-in solution to achieve the "More" button in an UITableView's "swipe to delete"-menu (as seen in the Mail.app) by extending Apple's own "swipe to delete"-implementation and not rewriting it, so UITableView's standard behaviour isn't changed.
 
 ![Screenshot](https://raw.github.com/scheinem/MSCMoreOptionTableViewCell/master/MSCMoreOptionTableViewCell.png)
 
@@ -11,7 +11,7 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
 
 ```objective-c
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
     static NSString *identifier = @"MSCMoreOptionTableViewCell";
     MSCMoreOptionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
@@ -19,7 +19,7 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
         cell.delegate = self;
     }
     cell.textLabel.text = @"Cell";
-    
+
     return cell;
 }
 ```
@@ -32,17 +32,19 @@ If you are using **Storyboards** in your project then take a look at the demo pr
 2. Add MSCMoreOptionTableViewCell's root folder to your project's header search paths.
 3. Add MSCMoreOptionTableViewCell to your target's dependencies (Target >> Build Phases >> Target Dependencies).
 4. Add MSCMoreOptionTableViewCell to your target's linked frameworks (Target >> Summary >> Linked Frameworks and Libraries).
-5. Import "MSCMoreOptionTableViewCell.h" either in Prefix.pch or seperatly in any file you use it.
+5. Import "MSCMoreOptionTableViewCell.h" either in Prefix.pch or separately in any file you use it.
 
 ## Delegate
 
 ### Required
 
+None.
+
+### Optional
+
 ```objective-c
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 ```
-
-### Optional
 
 ```objective-c
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -56,9 +58,17 @@ If you are using **Storyboards** in your project then take a look at the demo pr
 - (UIColor *)tableView:(UITableView *)tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 ```
 
+```objective-c
+- (UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+```
+
+```objective-c
+- (UIColor *)tableView:(UITableView *)tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+```
+
 ## Customizing
 
-The 'More' button can be customized using the three optional delegate methods mentioned above.
+Both buttons can be customized using the optional delegate methods mentioned above.
 
 ## Compatibility and Requirements
 

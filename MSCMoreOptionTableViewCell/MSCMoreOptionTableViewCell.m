@@ -100,7 +100,7 @@
                             }
                         }
 
-                        if ([self moreOptionButtonTitle].length > 0) {
+                        if ([self moreOptionButtonTitle]) {
                             self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
                             [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -133,10 +133,8 @@
                             }
                             [self.moreOptionButton setBackgroundColor:backgroundColor];
 
-                            if([self isMoreOptionVisible]) {
-                                // Add the "More" button to the cell's view hierarchy
-                                [deleteConfirmationView addSubview:self.moreOptionButton];
-                            }
+                            // Add the "More" button to the cell's view hierarchy
+                            [deleteConfirmationView addSubview:self.moreOptionButton];
                         }
 
                         break;
@@ -210,10 +208,8 @@
     self.moreOptionButton.frame = moreOptionButtonFrame;
 
     CGRect rect = deleteConfirmationView.frame;
-    if([self isMoreOptionVisible]){
-        rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
-        rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
-    }
+    rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
+    rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
     deleteConfirmationView.frame = rect;
 }
 
@@ -234,20 +230,6 @@
     }
 }
 
-- (BOOL)isMoreOptionVisible {
-    UITableView *tableView = [self tableView];
-    NSString *moreTitle = nil;
-    if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
-        moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
-    }
-
-    return [self isTitleValid:moreTitle];
-}
-
-- (BOOL)isTitleValid:(NSString *)title {
-        return title != nil && [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
-}
-
 - (NSString *)moreOptionButtonTitle {
     UITableView *tableView = [self tableView];
 
@@ -255,12 +237,8 @@
     if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
         moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
     }
-
-    return [self isMoreOptionButtonTitleValid:moreTitle] ? moreTitle : nil;
-}
-
-- (BOOL)isMoreOptionButtonTitleValid:(NSString *)title {
-    return title != nil && [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
+    
+    return moreTitle;
 }
 
 @end

@@ -169,7 +169,7 @@
 }
 
 - (void)moreOptionButtonPressed:(id)sender {
-    if (self.delegate) {
+    if ([self.delegate respondsToSelector:@selector(tableView:moreOptionButtonPressedInRowAtIndexPath:)]) {
         [self.delegate tableView:[self tableView] moreOptionButtonPressedInRowAtIndexPath:[[self tableView] indexPathForCell:self]];
     }
 }

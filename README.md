@@ -11,7 +11,7 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
 
 ```objective-c
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
     static NSString *identifier = @"MSCMoreOptionTableViewCell";
     MSCMoreOptionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
@@ -19,7 +19,7 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
         cell.delegate = self;
     }
     cell.textLabel.text = @"Cell";
-    
+
     return cell;
 }
 ```
@@ -38,11 +38,13 @@ If you are using **Storyboards** in your project then take a look at the demo pr
 
 ### Required
 
+None.
+
+### Optional
+
 ```objective-c
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 ```
-
-### Optional
 
 ```objective-c
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;

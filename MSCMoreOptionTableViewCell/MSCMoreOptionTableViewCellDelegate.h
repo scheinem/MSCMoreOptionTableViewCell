@@ -8,12 +8,14 @@
 
 @protocol MSCMoreOptionTableViewCellDelegate<NSObject>
 
-@required
-- (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
-
 @optional
 
 // "More button"
+
+/*
+ * Tells the delegate that the "More" button for specified row was pressed.
+ */
+- (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
  * If not implemented or returning nil the "More" button will not be created and the

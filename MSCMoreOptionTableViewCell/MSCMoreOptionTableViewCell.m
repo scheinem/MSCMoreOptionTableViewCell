@@ -26,7 +26,7 @@
     if (self) {
         _moreOptionButton = nil;
         _cellScrollView = nil;
-        
+
         [self setupMoreOption];
     }
     return self;
@@ -37,7 +37,7 @@
     if (self) {
         _moreOptionButton = nil;
         _cellScrollView = nil;
-        
+
         [self setupMoreOption];
     }
     return self;
@@ -72,7 +72,7 @@
                     else {
                         UIView *deleteConfirmationView = layer.delegate;
                         UITableView *tableView = [self tableView];
-                        
+
                         // Try to get "Delete" backgroundColor from delegate
                         if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
                             UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
@@ -83,7 +83,7 @@
                                 }
                             }
                         }
-                        
+
                         // Try to get "Delete" titleColor from Delegate
                         if ([self.delegate respondsToSelector:@selector(tableView:titleColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
                             UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:deleteConfirmationView];
@@ -99,20 +99,20 @@
                                 }
                             }
                         }
-                        
+
                         if ([self moreOptionButtonTitle].length > 0) {
                             self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
                             [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-                            
+
                             // Set "More" button's numberOfLines to 0 to enable support for multiline titles.
                             self.moreOptionButton.titleLabel.numberOfLines = 0;
-                            
+
                             /*
                              * Get "More" title from delegate. Doesn't have to check if delegate responds
                              * because this must be otherwise the "if"-clause wouldn't have been entered.
                              */
                             [self setMoreOptionButtonTitle:[self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]] inDeleteConfirmationView:deleteConfirmationView];
-                            
+
                             // Try to get "More" titleColor from delegate
                             UIColor *titleColor = nil;
                             if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
@@ -122,7 +122,7 @@
                                 titleColor = [UIColor whiteColor];
                             }
                             [self.moreOptionButton setTitleColor:titleColor forState:UIControlStateNormal];
-                            
+
                             // Try to get "More" backgroundColor from delegate
                             UIColor *backgroundColor = nil;
                             if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
@@ -132,11 +132,13 @@
                                 backgroundColor = [UIColor lightGrayColor];
                             }
                             [self.moreOptionButton setBackgroundColor:backgroundColor];
-                            
-                            // Add the "More" button to the cell's view hirarchy
-                            [deleteConfirmationView addSubview:self.moreOptionButton];
+
+                            if([self isMoreOptionVisible]) {
+                                // Add the "More" button to the cell's view hierarchy
+                                [deleteConfirmationView addSubview:self.moreOptionButton];
+                            }
                         }
-                        
+
                         break;
                     }
                 }
@@ -176,21 +178,21 @@
     UIView *tableView = self.superview;
     while(tableView) {
         if(![tableView isKindOfClass:[UITableView class]]) {
-			tableView = tableView.superview;
-		}
+            tableView = tableView.superview;
+        }
         else {
             return (UITableView *)tableView;
         }
-	}
+    }
     return nil;
 }
 
 - (void)setMoreOptionButtonTitle:(NSString *)title inDeleteConfirmationView:(UIView *)deleteConfirmationView {
     CGFloat priorMoreOptionButtonFrameWidth = self.moreOptionButton.frame.size.width;
-    
+
     [self.moreOptionButton setTitle:title forState:UIControlStateNormal];
     [self.moreOptionButton sizeToFit];
-    
+
     CGRect moreOptionButtonFrame = CGRectZero;
     moreOptionButtonFrame.size.width = self.moreOptionButton.frame.size.width + 30.f;
     /*
@@ -201,15 +203,17 @@
     if (deleteConfirmationButton) {
         moreOptionButtonFrame.size.height = deleteConfirmationButton.frame.size.height;
     }
-    
+
     if (moreOptionButtonFrame.size.height == 0.f) {
         moreOptionButtonFrame.size.height = deleteConfirmationView.frame.size.height;
     }
     self.moreOptionButton.frame = moreOptionButtonFrame;
-    
+
     CGRect rect = deleteConfirmationView.frame;
-    rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
-    rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
+    if([self isMoreOptionVisible]){
+        rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
+        rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
+    }
     deleteConfirmationView.frame = rect;
 }
 
@@ -230,14 +234,28 @@
     }
 }
 
-- (NSString *)moreOptionButtonTitle {
+- (BOOL)isMoreOptionVisible {
     UITableView *tableView = [self tableView];
-    
     NSString *moreTitle = nil;
     if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
         moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
     }
-    
+
+    return [self isTitleValid:moreTitle];
+}
+
+- (BOOL)isTitleValid:(NSString *)title {
+        return title != nil && [title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
+}
+
+- (NSString *)moreOptionButtonTitle {
+    UITableView *tableView = [self tableView];
+
+    NSString *moreTitle = nil;
+    if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
+        moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
+    }
+
     return [self isMoreOptionButtonTitleValid:moreTitle] ? moreTitle : nil;
 }
 

@@ -106,6 +106,7 @@
     self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.moreOptionButton.titleLabel.numberOfLines = 0;
+    self.moreOptionButton.titleLabel.textAlignment =  NSTextAlignmentCenter;
 
     [self.moreOptionButton setTitle:[self moreOptionButtonTitleFromDelegate] forState:UIControlStateNormal];
     [self setMoreButtonTitleColorFromDelegate];

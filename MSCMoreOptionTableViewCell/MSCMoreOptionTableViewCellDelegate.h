@@ -49,4 +49,6 @@
  */
 - (UIColor *)tableView:(UITableView *)tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
+- (CGFloat)tableView:(UITableView *)tableView widthForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
+
 @end

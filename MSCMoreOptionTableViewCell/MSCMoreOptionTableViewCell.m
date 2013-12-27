@@ -138,13 +138,22 @@
 - (void)sizeMoreOptionButtonToFitText
 {
     CGRect moreOptionButtonFrame = CGRectZero;
-    
-    CGSize sizeThatFits = [self.moreOptionButton sizeThatFits:self.moreOptionButton.bounds.size];
-    moreOptionButtonFrame.size.width = sizeThatFits.width + 30.f;
+
+    moreOptionButtonFrame.size.width = [self moreOptionButtonWidth];
     
     moreOptionButtonFrame.size.height = [self moreOptionButtonHeight];
     
     self.moreOptionButton.frame = moreOptionButtonFrame;
+}
+
+- (CGFloat)moreOptionButtonWidth
+{
+    if ([[self delegate] respondsToSelector:@selector(tableView:widthForMoreOptionButtonForRowAtIndexPath:)]) {
+        return [[self delegate] tableView:[self tableView] widthForMoreOptionButtonForRowAtIndexPath:[self indexPath]];
+    }else{
+        CGSize sizeThatFits = [self.moreOptionButton sizeThatFits:self.moreOptionButton.bounds.size];
+        return sizeThatFits.width + 30.f;
+    }
 }
 
 - (CALayer *)findSwipeToDeleteLayerInScrollViewLayer:(CALayer *)scrollViewLayer
@@ -157,6 +166,11 @@
     }
 
     return nil;
+}
+
+- (NSIndexPath *)indexPath
+{
+    return [_tableView indexPathForCell:self];
 }
 
 - (void)setMoreButtonBackgroundColorFromDelegate

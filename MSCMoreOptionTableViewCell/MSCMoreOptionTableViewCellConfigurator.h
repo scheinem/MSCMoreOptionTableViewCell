@@ -10,11 +10,12 @@
 
 @interface MSCMoreOptionTableViewCellConfigurator : NSObject
 
-- (void)configureActionMenuButtonsIfNeeded;
-
-@property (nonatomic, weak) MSCMoreOptionTableViewCell *cell;
-
 - (instancetype)initWithCell:(MSCMoreOptionTableViewCell *)cell;
 
+
+- (void)initOrTeardownActionMenuButtonsIfNeeded;
+
+
+@property (nonatomic, weak) MSCMoreOptionTableViewCell *cell;
 
 @end

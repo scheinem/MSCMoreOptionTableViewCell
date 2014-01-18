@@ -23,4 +23,7 @@
 - (UIButton *)deleteConfirmationButton;
 
 - (UITableView *)tableView;
+
+- (NSIndexPath *)indexPathInTableView;
+
 @end

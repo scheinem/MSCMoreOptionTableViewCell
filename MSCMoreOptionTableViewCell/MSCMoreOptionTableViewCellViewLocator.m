@@ -100,4 +100,10 @@
     return nil;
 }
 
+- (NSIndexPath *)indexPathInTableView
+{
+   return [[self tableView] indexPathForCell:self.cell];
+}
+
+
 @end

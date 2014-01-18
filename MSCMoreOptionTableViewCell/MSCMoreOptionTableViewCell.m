@@ -22,10 +22,6 @@
 
 }
 
-////////////////////////////////////////////////////////////////////////
-#pragma mark - Life Cycle
-////////////////////////////////////////////////////////////////////////
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -79,12 +75,7 @@
 - (void)cellScrollViewLayerSublayersDidChange
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-    [[self configurator] configureActionMenuButtonsIfNeeded];
-}
-
-- (NSIndexPath *)indexPath
-{
-    return [[[self viewLocator] tableView] indexPathForCell:self];
+    [[self configurator] initOrTeardownActionMenuButtonsIfNeeded];
 }
 
 @end

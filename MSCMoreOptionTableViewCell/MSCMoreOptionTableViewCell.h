@@ -15,5 +15,4 @@
 // should be framework private
 @property (nonatomic, strong) UIButton *moreOptionButton;
 
-- (NSIndexPath *)indexPath;
 @end

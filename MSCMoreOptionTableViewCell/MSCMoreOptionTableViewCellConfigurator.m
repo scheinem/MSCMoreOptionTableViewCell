@@ -27,20 +27,18 @@
     return self;
 }
 
-- (void)configureActionMenuButtonsIfNeeded
+- (void)initOrTeardownActionMenuButtonsIfNeeded
 {
     if (!_cell.moreOptionButton) {
-        [self configureActionMenuButtonsIfAble];
-    }else{
-        // lifetime of the moreOptionButton is tied to the deleteConfirmationView.
-        if (![[self viewLocator] deleteConfirmationView]) {
-            NSLog(@"More button configured, but the delete confirmation view is gone. Cleaning up.");
-            _cell.moreOptionButton = nil;
-        }
+        [self initActionMenuButtonsIfAble];
+    }
+
+    if (![[self viewLocator] deleteConfirmationView]) {
+        _cell.moreOptionButton = nil;
     }
 }
 
-- (void)configureActionMenuButtonsIfAble
+- (void)initActionMenuButtonsIfAble
 {
     if ([self canConfigureActionMenuButtons]) {
         [self configureActionMenuButtons];
@@ -95,7 +93,6 @@
 {
     return [self moreOptionButtonTitleFromDelegate] != nil;
 }
-
 
 - (void)initMoreButton
 {
@@ -201,7 +198,7 @@
 - (CGFloat)moreOptionButtonWidth
 {
     if ([[[self cell] delegate] respondsToSelector:@selector(tableView:widthForMoreOptionButtonForRowAtIndexPath:)]) {
-        return [[[self cell] delegate] tableView:[[self viewLocator] tableView] widthForMoreOptionButtonForRowAtIndexPath:[[self cell] indexPath]];
+        return [[[self cell] delegate] tableView:[[self viewLocator] tableView] widthForMoreOptionButtonForRowAtIndexPath:[[self viewLocator] indexPathInTableView]];
     }else{
         CGSize sizeThatFits = [self.cell.moreOptionButton sizeThatFits:self.cell.moreOptionButton.bounds.size];
         return sizeThatFits.width + 30.f;
@@ -231,7 +228,7 @@
     UITableView *tableView = [[self viewLocator] tableView];
 
     if ([self.cell.delegate respondsToSelector:@selector(tableView:moreOptionButtonPressedInRowAtIndexPath:)]) {
-        [self.cell.delegate tableView:tableView moreOptionButtonPressedInRowAtIndexPath:[[self cell] indexPath]];
+        [self.cell.delegate tableView:tableView moreOptionButtonPressedInRowAtIndexPath:[[self viewLocator] indexPathInTableView]];
     }
 }
 

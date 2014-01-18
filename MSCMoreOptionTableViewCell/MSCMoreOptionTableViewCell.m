@@ -16,8 +16,7 @@
 @end
 
 @implementation MSCMoreOptionTableViewCell {
-    UIView *_deleteConfirmationView;
-    UITableView *_tableView;
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -42,9 +41,6 @@
 
 - (void)initFromCoderOrWithStyle
 {
-    _moreOptionButton = nil;
-    _cellScrollView = nil;
-
     [self setupMoreOption];
 }
 
@@ -55,7 +51,7 @@
 
 - (void)observeCellScrollViewSublayers
 {
-    [_cellScrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cellScrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (UIScrollView *)findScrollView
@@ -154,8 +150,6 @@
 
 - (void)configureActionMenuButtons
 {
-    _tableView = [self tableView];
-
     [self configureDeleteButton];
 
     if ([self shouldDisplayMoreButton]) {
@@ -179,8 +173,6 @@
     return nil;
 }
 
-
-
 - (void)configureDeleteButton
 {
     [self configureDeleteButtonBackgroundColorFromDelegate];
@@ -189,8 +181,10 @@
 
 - (void)configureDeleteButtonBackgroundColorFromDelegate
 {
+    UITableView *tableView = [self tableView];
+
     if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
-            UIColor *deleteButtonColor = [self.delegate tableView:_tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+            UIColor *deleteButtonColor = [self.delegate tableView:tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
             if (deleteButtonColor) {
                 [self deleteConfirmationButton].backgroundColor = deleteButtonColor;
             }
@@ -199,8 +193,10 @@
 
 - (void)configureDeleteButtonTitleColorFromDelegate
 {
+    UITableView *tableView = [self tableView];
+
     if ([self.delegate respondsToSelector:@selector(tableView:titleColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
-        UIColor *deleteButtonTitleColor = [self.delegate tableView:_tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+        UIColor *deleteButtonTitleColor = [self.delegate tableView:tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
         if (deleteButtonTitleColor) {
             [[self deleteButtonLabel] setTextColor:deleteButtonTitleColor];
         }
@@ -267,8 +263,10 @@
 
 - (UIColor *)moreButtonTitleColorFromDelegate
 {
+    UITableView *tableView = [self tableView];
+
     if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
-        return [self.delegate tableView:_tableView titleColorForMoreOptionButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+        return [self.delegate tableView:tableView titleColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
     }
 
     return nil;
@@ -292,8 +290,10 @@
 
 - (UIColor *)moreButtonBackgroundColorFromDelegate
 {
+    UITableView *tableView = [self tableView];
+
     if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
-        return [self.delegate tableView:_tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+        return [self.delegate tableView:tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
     }
 
     return nil;
@@ -353,7 +353,7 @@
 
 - (NSIndexPath *)indexPath
 {
-    return [_tableView indexPathForCell:self];
+    return [[self tableView] indexPathForCell:self];
 }
 
 

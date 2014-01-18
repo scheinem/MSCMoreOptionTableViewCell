@@ -27,7 +27,7 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self sharedInit];
+        [self initFromCoderOrWithStyle];
     }
     return self;
 }
@@ -35,12 +35,12 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self sharedInit];
+        [self initFromCoderOrWithStyle];
     }
     return self;
 }
 
-- (void)sharedInit
+- (void)initFromCoderOrWithStyle
 {
     _moreOptionButton = nil;
     _cellScrollView = nil;
@@ -48,249 +48,13 @@
     [self setupMoreOption];
 }
 
-- (void)dealloc {
-    [self.cellScrollView.layer removeObserver:self forKeyPath:@"sublayers" context:nil];
-}
-
-////////////////////////////////////////////////////////////////////////
-#pragma mark - NSObject(NSKeyValueObserving)
-////////////////////////////////////////////////////////////////////////
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"sublayers"]) {
-        [self cellScrollViewLayerSublayersDidChange];
-    }
-}
-
-- (void)cellScrollViewLayerSublayersDidChange
-{
-    CALayer *cellScrollViewLayer = _cellScrollView.layer;   // implies: UITableViewCell -> UIScrollView -> .layer
-
-    BOOL moreOptionDeleteButtonVisiblePrior = (self.moreOptionButton != nil); // more option has been shown before? when is this button set?
-    BOOL swipeToDeleteControlVisible = NO;
-
-    CALayer *swipeToDeleteLayer = [self findSwipeToDeleteLayerInScrollViewLayer:cellScrollViewLayer];
-    if (swipeToDeleteLayer) {   // what the hell is happening here?!?!
-        if (self.moreOptionButton) {
-            swipeToDeleteControlVisible = YES;
-        }
-        else {
-            [self configureActionMenuButtonsInLayer:swipeToDeleteLayer];
-        }
-    }
-
-    // what does this do?                                    // visiblePrior == self.moreOptionButton
-    if (moreOptionDeleteButtonVisiblePrior && !swipeToDeleteControlVisible) { // !swipeToDeleteVisible == !self.moreOptionButton || !self.swipeToDeleteLayer
-        self.moreOptionButton = nil;
-    }
-}
-
-- (void)configureActionMenuButtonsInLayer:(CALayer *)layer
-{
-    // a layer containing a delete confirmation view
-    UIView *deleteConfirmationView = layer.delegate;
-    _deleteConfirmationView = deleteConfirmationView;
-
-    UITableView *tableView = [self tableView];
-    _tableView = tableView;
-
-    [self configureDeleteButton];
-
-    if ([self shouldDisplayMoreButton]) {
-        [self configureMoreButton];
-    }
-}
-
-- (void)configureMoreButton
-{
-    self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    self.moreOptionButton.titleLabel.numberOfLines = 0;
-    self.moreOptionButton.titleLabel.textAlignment =  NSTextAlignmentCenter;
-
-    [self.moreOptionButton setTitle:[self moreOptionButtonTitleFromDelegate] forState:UIControlStateNormal];
-    [self setMoreButtonTitleColorFromDelegate];
-    [self setMoreButtonBackgroundColorFromDelegate];
-
-    [self sizeThingsToFit];
-
-    [_deleteConfirmationView addSubview:self.moreOptionButton];
-}
-
-- (void)sizeThingsToFit
-{
-    CGFloat priorMoreOptionButtonFrameWidth = self.moreOptionButton.frame.size.width;
-    CGFloat originalDeleteConfirmationViewWidth = _deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth;
-    
-    [self sizeMoreOptionButtonToFitText];
-    [self sizeDeleteConfirmationViewToFitMoreButton:originalDeleteConfirmationViewWidth];
-}
-
-- (void)sizeDeleteConfirmationViewToFitMoreButton:(CGFloat)originalDeleteConfirmationViewWidth
-{
-    CGRect rect = _deleteConfirmationView.frame;
-
-    rect.size.width = CGRectGetMaxX(self.moreOptionButton.frame) + originalDeleteConfirmationViewWidth;
-    rect.origin.x = _deleteConfirmationView.superview.bounds.size.width - rect.size.width; // right align
-
-    _deleteConfirmationView.frame = rect;
-}
-
-- (void)sizeMoreOptionButtonToFitText
-{
-    CGRect moreOptionButtonFrame = CGRectZero;
-
-    moreOptionButtonFrame.size.width = [self moreOptionButtonWidth];
-    
-    moreOptionButtonFrame.size.height = [self moreOptionButtonHeight];
-    
-    self.moreOptionButton.frame = moreOptionButtonFrame;
-}
-
-- (CGFloat)moreOptionButtonWidth
-{
-    if ([[self delegate] respondsToSelector:@selector(tableView:widthForMoreOptionButtonForRowAtIndexPath:)]) {
-        return [[self delegate] tableView:[self tableView] widthForMoreOptionButtonForRowAtIndexPath:[self indexPath]];
-    }else{
-        CGSize sizeThatFits = [self.moreOptionButton sizeThatFits:self.moreOptionButton.bounds.size];
-        return sizeThatFits.width + 30.f;
-    }
-}
-
-- (CALayer *)findSwipeToDeleteLayerInScrollViewLayer:(CALayer *)scrollViewLayer
-{
-    for (CALayer *layer in [scrollViewLayer sublayers]) {
-        NSString *className = NSStringFromClass([layer.delegate class]);
-        if ([className hasPrefix:@"UI"] && [className hasSuffix:@"ConfirmationView"]) {
-            return layer;
-        }
-    }
-
-    return nil;
-}
-
-- (NSIndexPath *)indexPath
-{
-    return [_tableView indexPathForCell:self];
-}
-
-- (void)setMoreButtonBackgroundColorFromDelegate
-{
-    UIColor *backgroundColor = nil;
-    if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
-        backgroundColor = [self.delegate tableView:_tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
-    }
-    if (backgroundColor == nil) {
-        backgroundColor = [UIColor lightGrayColor];
-    }
-    [self.moreOptionButton setBackgroundColor:backgroundColor];
-}
-
-- (void)setMoreButtonTitleColorFromDelegate
-{
-    UIColor *titleColor = nil;
-    if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
-        titleColor = [self.delegate tableView:_tableView titleColorForMoreOptionButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
-    }
-    if (titleColor == nil) {
-        titleColor = [UIColor whiteColor];
-    }
-    [self.moreOptionButton setTitleColor:titleColor forState:UIControlStateNormal];
-}
-
-- (BOOL)shouldDisplayMoreButton
-{
-    return [self moreOptionButtonTitleFromDelegate] != nil;
-}
-
-- (void)configureDeleteButton
-{
-    [self configureDeleteButtonBackgroundColorFromDelegate];
-    [self configureDeleteButtonTitleColorFromDelegate];
-}
-
-- (void)configureDeleteButtonBackgroundColorFromDelegate
-{
-    if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
-        UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:_deleteConfirmationView];
-        if (deleteConfirmationButton) {
-            UIColor *deleteButtonColor = [self.delegate tableView:_tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
-            if (deleteButtonColor) {
-                deleteConfirmationButton.backgroundColor = deleteButtonColor;
-            }
-        }
-    }
-}
-
-- (void)configureDeleteButtonTitleColorFromDelegate
-{
-    if ([self.delegate respondsToSelector:@selector(tableView:titleColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
-        UIButton *deleteConfirmationButton = [self deleteButtonFromDeleteConfirmationView:_deleteConfirmationView];
-        if (deleteConfirmationButton) {
-            UIColor *deleteButtonTitleColor = [self.delegate tableView:_tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
-            if (deleteButtonTitleColor) {
-                for (UIView *label in deleteConfirmationButton.subviews) {
-                    if ([label isKindOfClass:[UILabel class]]) {
-                        [(UILabel*)label setTextColor:deleteButtonTitleColor];
-                        break;
-                    }
-                }
-            }
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////
-#pragma mark - private methods
-////////////////////////////////////////////////////////////////////////
-
-/*
- * Looks for a UIDeleteConfirmationButton in a given UIDeleteConfirmationView.
- * Returns nil if the button could not be found.
- */
-- (UIButton *)deleteButtonFromDeleteConfirmationView:(UIView *)deleteConfirmationView {
-    for (UIButton *deleteConfirmationButton in deleteConfirmationView.subviews) {
-        NSString *name = NSStringFromClass([deleteConfirmationButton class]);
-        if ([name hasPrefix:@"UI"] && [name rangeOfString:@"Delete"].length > 0 && [name hasSuffix:@"Button"]) {
-            return deleteConfirmationButton;
-        }
-    }
-    return nil;
-}
-
-- (void)moreOptionButtonPressed:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(tableView:moreOptionButtonPressedInRowAtIndexPath:)]) {
-        [self.delegate tableView:[self tableView] moreOptionButtonPressedInRowAtIndexPath:[[self tableView] indexPathForCell:self]];
-    }
-}
-
-- (UITableView *)tableView {
-    UIView *superview = self.superview;
-    while(superview) {
-        if([superview isKindOfClass:[UITableView class]]) {
-           return (UITableView *)superview;
-        }else{
-            superview = superview.superview;
-        }
-    }
-
-    return nil;
-}
-
-- (UIButton *)deleteConfirmationButton
-{
-    return [self deleteButtonFromDeleteConfirmationView:_deleteConfirmationView]; // or cache?
-}
-
-- (CGFloat)moreOptionButtonHeight
-{
-    UIButton *deleteConfirmationButton = [self deleteConfirmationButton];
-
-    return deleteConfirmationButton.frame.size.height ? deleteConfirmationButton.frame.size.height : _deleteConfirmationView.frame.size.height;
-}
-
 - (void)setupMoreOption {
     _cellScrollView = [self findScrollView];
+    [self observeCellScrollViewSublayers];
+}
+
+- (void)observeCellScrollViewSublayers
+{
     [_cellScrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
 }
 
@@ -306,23 +70,322 @@
 
     for (CALayer *layer in self.layer.sublayers) {
         if ([layer.delegate isKindOfClass:[UIScrollView class]]) {
-           return (UIScrollView *)layer.delegate;
+            return (UIScrollView *)layer.delegate;
         }
     }
 
     return nil;
 }
 
+- (void)dealloc {
+    [self cleanupObservingCellScrollViewSublayers];
+}
+
+- (void)cleanupObservingCellScrollViewSublayers
+{
+    [self.cellScrollView.layer removeObserver:self forKeyPath:@"sublayers" context:nil];
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSObject(NSKeyValueObserving)
+////////////////////////////////////////////////////////////////////////
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"sublayers"]) {
+        [self cellScrollViewLayerSublayersDidChange];
+    }
+}
+
+- (void)cellScrollViewLayerSublayersDidChange
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self configureActionMenuButtonsIfNeeded];
+}
+
+- (void)configureActionMenuButtonsIfNeeded
+{
+    if (!self.moreOptionButton) {
+        [self configureActionMenuButtonsIfAble];
+    }else{
+        // lifetime of the moreOptionButton is tied to the deleteConfirmationView.
+        if (![self deleteConfirmationView]) {
+            NSLog(@"More button configured, but the delete confirmation view is gone. Cleaning up.");
+            self.moreOptionButton = nil;
+        }
+    }
+}
+
+- (void)configureActionMenuButtonsIfAble
+{
+    if ([self canConfigureActionMenuButtons]) {
+        [self configureActionMenuButtons];
+    }
+}
+
+- (BOOL)canConfigureActionMenuButtons
+{
+    return [self deleteConfirmationView] != nil;
+}
+
+// TableViewCellViewLocator (also layers)
+- (UIView *)deleteConfirmationView
+{
+    CALayer *swipeToDeleteLayer = [self swipeToDeleteLayer];
+    return swipeToDeleteLayer.delegate;
+}
+
+- (CALayer *)swipeToDeleteLayer
+{
+    CALayer *cellScrollViewLayer = _cellScrollView.layer;
+    return [self findSwipeToDeleteLayerInScrollViewLayer:cellScrollViewLayer];
+}
+
+- (CALayer *)findSwipeToDeleteLayerInScrollViewLayer:(CALayer *)scrollViewLayer
+{
+    for (CALayer *layer in [scrollViewLayer sublayers]) {
+        NSString *className = NSStringFromClass([layer.delegate class]);
+        if ([className hasPrefix:@"UI"] && [className hasSuffix:@"ConfirmationView"]) {
+            return layer;
+        }
+    }
+
+    return nil;
+}
+
+- (void)configureActionMenuButtons
+{
+    _tableView = [self tableView];
+
+    [self configureDeleteButton];
+
+    if ([self shouldDisplayMoreButton]) {
+        [self initMoreButton];
+    }
+}
+
+
+// TableViewCellViewLocator
+- (UITableView *)tableView
+{
+    UIView *superview = self.superview;
+    while(superview) {
+        if([superview isKindOfClass:[UITableView class]]) {
+            return (UITableView *)superview;
+        }else{
+            superview = superview.superview;
+        }
+    }
+
+    return nil;
+}
+
+
+
+- (void)configureDeleteButton
+{
+    [self configureDeleteButtonBackgroundColorFromDelegate];
+    [self configureDeleteButtonTitleColorFromDelegate];
+}
+
+- (void)configureDeleteButtonBackgroundColorFromDelegate
+{
+    if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
+            UIColor *deleteButtonColor = [self.delegate tableView:_tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+            if (deleteButtonColor) {
+                [self deleteConfirmationButton].backgroundColor = deleteButtonColor;
+            }
+    }
+}
+
+- (void)configureDeleteButtonTitleColorFromDelegate
+{
+    if ([self.delegate respondsToSelector:@selector(tableView:titleColorForDeleteConfirmationButtonForRowAtIndexPath:)]) {
+        UIColor *deleteButtonTitleColor = [self.delegate tableView:_tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+        if (deleteButtonTitleColor) {
+            [[self deleteButtonLabel] setTextColor:deleteButtonTitleColor];
+        }
+    }
+}
+
+// Locator
+- (UILabel *)deleteButtonLabel
+{
+    for (UIView *view in [[self deleteConfirmationButton] subviews]) {
+        if ([view isKindOfClass:[UILabel class]]) {
+            return view;
+        }
+    }
+
+    return nil;
+}
+
+- (void)initMoreButton
+{
+    self.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [self.moreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.moreOptionButton.titleLabel.numberOfLines = 0;
+    self.moreOptionButton.titleLabel.textAlignment =  NSTextAlignmentCenter;
+
+    [self setMoreButtonTitleFromDelegate];
+    [self setMoreButtonTitleColorFromDelegate];
+    [self setMoreButtonBackgroundColorFromDelegate];
+
+    [self sizeThingsToFit];
+
+    [[self deleteConfirmationView] addSubview:self.moreOptionButton];
+}
+
+- (void)setMoreButtonTitleFromDelegate
+{
+    [self.moreOptionButton setTitle:[self moreOptionButtonTitleFromDelegate] forState:UIControlStateNormal];
+}
+
 - (NSString *)moreOptionButtonTitleFromDelegate
 {
-    UITableView *tableView = [self tableView];
-
-    NSString *moreTitle = nil;
     if ([self.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
-        moreTitle = [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
+        UITableView *tableView = [self tableView];
+        return [self.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self]];
     }
+
+    return nil;
+}
+
+- (void)setMoreButtonTitleColorFromDelegate
+{
+    [self.moreOptionButton setTitleColor:[self moreButtonTitleColor] forState:UIControlStateNormal];
+}
+
+- (UIColor *)moreButtonTitleColor
+{
+    UIColor *titleColor = [self moreButtonTitleColorFromDelegate];
+    if (titleColor) {
+        return titleColor;
+    }
+
+    return [UIColor whiteColor];
+}
+
+- (UIColor *)moreButtonTitleColorFromDelegate
+{
+    if ([self.delegate respondsToSelector:@selector(tableView:titleColorForMoreOptionButtonForRowAtIndexPath:)]) {
+        return [self.delegate tableView:_tableView titleColorForMoreOptionButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+    }
+
+    return nil;
+}
+- (void)setMoreButtonBackgroundColorFromDelegate
+{
+
+
+    [self.moreOptionButton setBackgroundColor:[self moreButtonBackgroundColor]];
+}
+
+- (UIColor *)moreButtonBackgroundColor
+{
+    UIColor *backgroundColor = [self moreButtonBackgroundColorFromDelegate];
+    if (backgroundColor) {
+        return backgroundColor;
+    }
+
+    return [UIColor lightGrayColor];
+}
+
+- (UIColor *)moreButtonBackgroundColorFromDelegate
+{
+    if ([self.delegate respondsToSelector:@selector(tableView:backgroundColorForMoreOptionButtonForRowAtIndexPath:)]) {
+        return [self.delegate tableView:_tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:[_tableView indexPathForCell:self]];
+    }
+
+    return nil;
+}
+
+- (void)sizeThingsToFit
+{
+    CGFloat priorMoreOptionButtonFrameWidth = self.moreOptionButton.frame.size.width;
+    CGFloat originalDeleteConfirmationViewWidth = [self deleteConfirmationView].frame.size.width - priorMoreOptionButtonFrameWidth;
     
-    return moreTitle;
+    [self sizeMoreOptionButtonToFitText];
+    [self sizeDeleteConfirmationViewToFitMoreButton:originalDeleteConfirmationViewWidth];
+}
+
+- (void)sizeMoreOptionButtonToFitText
+{
+    CGRect moreOptionButtonFrame = CGRectZero;
+
+    moreOptionButtonFrame.size.width = [self moreOptionButtonWidth];
+    moreOptionButtonFrame.size.height = [self moreOptionButtonHeight];
+
+    self.moreOptionButton.frame = moreOptionButtonFrame;
+}
+
+- (CGFloat)moreOptionButtonWidth
+{
+    if ([[self delegate] respondsToSelector:@selector(tableView:widthForMoreOptionButtonForRowAtIndexPath:)]) {
+        return [[self delegate] tableView:[self tableView] widthForMoreOptionButtonForRowAtIndexPath:[self indexPath]];
+    }else{
+        CGSize sizeThatFits = [self.moreOptionButton sizeThatFits:self.moreOptionButton.bounds.size];
+        return sizeThatFits.width + 30.f;
+    }
+}
+
+- (CGFloat)moreOptionButtonHeight
+{
+    UIButton *deleteConfirmationButton = [self deleteConfirmationButton];
+
+    return deleteConfirmationButton.frame.size.height ? deleteConfirmationButton.frame.size.height : [self deleteConfirmationView].frame.size.height;
+}
+
+- (void)sizeDeleteConfirmationViewToFitMoreButton:(CGFloat)originalDeleteConfirmationViewWidth
+{
+    CGRect rect = [self deleteConfirmationView].frame;
+
+    rect.size.width = CGRectGetMaxX(self.moreOptionButton.frame) + originalDeleteConfirmationViewWidth;
+    rect.origin.x = [self deleteConfirmationView].superview.bounds.size.width - rect.size.width; // right align
+
+    [self deleteConfirmationView].frame = rect;
+}
+
+
+
+
+
+
+
+- (NSIndexPath *)indexPath
+{
+    return [_tableView indexPathForCell:self];
+}
+
+
+
+
+
+- (BOOL)shouldDisplayMoreButton
+{
+    return [self moreOptionButtonTitleFromDelegate] != nil;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - private methods
+////////////////////////////////////////////////////////////////////////
+
+- (UIButton *)deleteConfirmationButton
+{
+    for (UIButton *deleteConfirmationButton in [self deleteConfirmationView].subviews) {
+        NSString *name = NSStringFromClass([deleteConfirmationButton class]);
+        if ([name hasPrefix:@"UI"] && [name rangeOfString:@"Delete"].length > 0 && [name hasSuffix:@"Button"]) {
+            return deleteConfirmationButton;
+        }
+    }
+    return nil;
+}
+
+- (void)moreOptionButtonPressed:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(tableView:moreOptionButtonPressedInRowAtIndexPath:)]) {
+        [self.delegate tableView:[self tableView] moreOptionButtonPressedInRowAtIndexPath:[[self tableView] indexPathForCell:self]];
+    }
 }
 
 @end

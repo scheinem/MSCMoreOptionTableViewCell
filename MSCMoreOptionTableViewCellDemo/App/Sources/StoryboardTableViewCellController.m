@@ -93,7 +93,26 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return @"More";
+    return @"Move to Top";
+}
+
+- (CGFloat)tableView:(UITableView *)tableView widthForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *moveTo = @"Move To";
+    UILabel *label = [[UILabel alloc] init];
+    [label setText:moveTo];
+    CGSize sizeThatFits = [label sizeThatFits:label.frame.size];
+    NSLog(@"Size that fits is: %@", NSStringFromCGSize(sizeThatFits));
+    return sizeThatFits.width + 30.f;
+}
+
+- (UIColor *)tableView:(UITableView *)tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [UIColor redColor];
+}
+
+- (UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [UIColor blackColor];
 }
 
 @end

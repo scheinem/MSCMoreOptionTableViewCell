@@ -49,6 +49,9 @@
  */
 - (UIColor *)tableView:(UITableView *)tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
+/*
+ * Defaults to sizing to fit the "More" button's label.
+ */
 - (CGFloat)tableView:(UITableView *)tableView widthForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

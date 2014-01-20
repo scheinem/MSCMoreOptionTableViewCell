@@ -16,6 +16,6 @@
 - (void)initOrTeardownActionMenuButtonsIfNeeded;
 
 
-@property (nonatomic, weak) MSCMoreOptionTableViewCell *cell;
+@property (nonatomic, readonly, weak) MSCMoreOptionTableViewCell *cell;
 
 @end

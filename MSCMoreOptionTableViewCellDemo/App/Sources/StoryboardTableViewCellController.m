@@ -101,7 +101,6 @@
     UILabel *label = [[UILabel alloc] init];
     [label setText:moveTo];
     CGSize sizeThatFits = [label sizeThatFits:label.frame.size];
-    NSLog(@"Size that fits is: %@", NSStringFromCGSize(sizeThatFits));
     return sizeThatFits.width + 30.f;
 }
 

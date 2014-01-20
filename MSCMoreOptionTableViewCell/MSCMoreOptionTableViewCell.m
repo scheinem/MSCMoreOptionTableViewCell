@@ -10,9 +10,16 @@
 #import "MSCMoreOptionTableViewCellConfigurator.h"
 #import "MSCMoreOptionTableViewCellViewLocator.h"
 
+/**
+* Collaborates with a MSCMoreOptionTableViewCellConfigurator, which configures a cell to display the More option button.
+*
+* Notifies that cell configurator whenever the sublayers of our scroll view change, as that may indicate a need to configure
+* or teardown the More option button.
+*/
+
 @interface MSCMoreOptionTableViewCell ()
 
-@property (nonatomic, strong) UIScrollView *cellScrollView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) MSCMoreOptionTableViewCellConfigurator *configurator;
 @property (nonatomic, strong) MSCMoreOptionTableViewCellViewLocator *viewLocator;
 
@@ -47,34 +54,33 @@
 }
 
 - (void)setupMoreOption {
-    self.cellScrollView = [[self viewLocator] findScrollView];
+    self.scrollView = [[self viewLocator] scrollView];
 
-    [self observeCellScrollViewSublayers];
+    [self observeScrollViewSublayers];
 }
 
-- (void)observeCellScrollViewSublayers
+- (void)observeScrollViewSublayers
 {
-    [self.cellScrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
+    [self.scrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)dealloc {
-    [self cleanupObservingCellScrollViewSublayers];
+    [self cleanupObservingScrollViewSublayers];
 }
 
-- (void)cleanupObservingCellScrollViewSublayers
+- (void)cleanupObservingScrollViewSublayers
 {
-    [self.cellScrollView.layer removeObserver:self forKeyPath:@"sublayers" context:nil];
+    [self.scrollView.layer removeObserver:self forKeyPath:@"sublayers" context:nil];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"sublayers"]) {
-        [self cellScrollViewLayerSublayersDidChange];
+        [self scrollViewLayerSublayersDidChange];
     }
 }
 
-- (void)cellScrollViewLayerSublayersDidChange
+- (void)scrollViewLayerSublayersDidChange
 {
-    NSLog(@"%@", NSStringFromSelector(_cmd));
     [[self configurator] initOrTeardownActionMenuButtonsIfNeeded];
 }
 

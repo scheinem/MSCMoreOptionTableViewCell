@@ -8,41 +8,21 @@
 
 
 @implementation MSCMoreOptionTableViewCellViewLocator {
-    UIScrollView *_cellScrollView;
+    UIScrollView *_scrollView;
 }
+
+@synthesize scrollView = _scrollView;
+
 - (instancetype)initWithCell:(MSCMoreOptionTableViewCell *)cell
 {
     self = [super init];
     if (self) {
-        self.cell = cell;
-        _cellScrollView = [self findScrollView]; // in cell as implicit param!
+        _cell = cell;
+
+        _scrollView = [self findScrollView];
     }
 
     return self;
-}
-
-- (UIView *)deleteConfirmationView
-{
-    CALayer *swipeToDeleteLayer = [self swipeToDeleteLayer];
-    return swipeToDeleteLayer.delegate;
-}
-
-- (CALayer *)swipeToDeleteLayer
-{
-    CALayer *cellScrollViewLayer = _cellScrollView.layer;
-    return [self findSwipeToDeleteLayerInScrollViewLayer:cellScrollViewLayer];
-}
-
-- (CALayer *)findSwipeToDeleteLayerInScrollViewLayer:(CALayer *)scrollViewLayer
-{
-    for (CALayer *layer in [scrollViewLayer sublayers]) {
-        NSString *className = NSStringFromClass([layer.delegate class]);
-        if ([className hasPrefix:@"UI"] && [className hasSuffix:@"ConfirmationView"]) {
-            return layer;
-        }
-    }
-
-    return nil;
 }
 
 - (UIScrollView *)findScrollView
@@ -64,26 +44,57 @@
     return nil;
 }
 
-- (UILabel *)deleteButtonLabel
+- (UIView *)deleteConfirmationView
 {
-    for (UIView *view in [[self deleteConfirmationButton] subviews]) {
-        if ([view isKindOfClass:[UILabel class]]) {
-            return view;
+    return [[self swipeToDeleteLayer] delegate];
+}
+
+- (CALayer *)swipeToDeleteLayer
+{
+    for (CALayer *layer in [_scrollView.layer sublayers]) {
+        if ([self layerIsSwipeToDeleteLayer:layer]) {
+            return layer;
         }
     }
 
     return nil;
 }
 
+- (BOOL)layerIsSwipeToDeleteLayer:(CALayer *)layer
+{
+    NSString *className = NSStringFromClass([layer.delegate class]);
+    return ([className hasPrefix:@"UI"] && [className hasSuffix:@"ConfirmationView"]);
+}
+
 - (UIButton *)deleteConfirmationButton
 {
-    for (UIButton *deleteConfirmationButton in [self deleteConfirmationView].subviews) {
-        NSString *name = NSStringFromClass([deleteConfirmationButton class]);
-        if ([name hasPrefix:@"UI"] && [name rangeOfString:@"Delete"].length > 0 && [name hasSuffix:@"Button"]) {
-            return deleteConfirmationButton;
+    for (UIButton *button in [[self deleteConfirmationView] subviews]) {
+        if ([self buttonIsDeleteConfirmationButton:button]) {
+            return button;
         }
     }
     return nil;
+}
+
+- (BOOL)buttonIsDeleteConfirmationButton:(UIButton *)button
+{
+    NSString *name = NSStringFromClass([button class]);
+    return [name hasPrefix:@"UI"] && [name rangeOfString:@"Delete"].length > 0 && [name hasSuffix:@"Button"];
+}
+
+- (UILabel *)deleteButtonLabel
+{
+    for (UIView *view in [[self deleteConfirmationButton] subviews]) {
+        if ([self viewIsDeleteButtonLabel:view]) {
+            return (UILabel *)view;
+        }
+    }
+
+    return nil;
+}
+
+- (BOOL)viewIsDeleteButtonLabel:(UIView *)view {
+    return [view isKindOfClass:[UILabel class]];
 }
 
 - (UITableView *)tableView
@@ -104,6 +115,5 @@
 {
    return [[self tableView] indexPathForCell:self.cell];
 }
-
 
 @end

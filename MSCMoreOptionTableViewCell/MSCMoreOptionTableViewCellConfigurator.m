@@ -29,12 +29,14 @@
 
 - (void)initOrTeardownActionMenuButtonsIfNeeded
 {
+    [self initActionMenuButtonsIfNeeded];
+
+    [self teardownActionMenuButtonsIfNeeded];
+}
+
+- (void)initActionMenuButtonsIfNeeded {
     if (!_cell.moreOptionButton) {
         [self initActionMenuButtonsIfAble];
-    }
-
-    if (![[self viewLocator] deleteConfirmationView]) {
-        _cell.moreOptionButton = nil;
     }
 }
 
@@ -94,6 +96,16 @@
     return [self moreOptionButtonTitleFromDelegate] != nil;
 }
 
+- (NSString *)moreOptionButtonTitleFromDelegate
+{
+    if ([self.cell.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
+        UITableView *tableView = [[self viewLocator] tableView];
+        return [self.cell.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self.cell]];
+    }
+
+    return nil;
+}
+
 - (void)initMoreButton
 {
     self.cell.moreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
@@ -113,16 +125,6 @@
 - (void)setMoreButtonTitleFromDelegate
 {
     [self.cell.moreOptionButton setTitle:[self moreOptionButtonTitleFromDelegate] forState:UIControlStateNormal];
-}
-
-- (NSString *)moreOptionButtonTitleFromDelegate
-{
-    if ([self.cell.delegate respondsToSelector:@selector(tableView:titleForMoreOptionButtonForRowAtIndexPath:)]) {
-        UITableView *tableView = [[self viewLocator] tableView];
-        return [self.cell.delegate tableView:tableView titleForMoreOptionButtonForRowAtIndexPath:[tableView indexPathForCell:self.cell]];
-    }
-
-    return nil;
 }
 
 - (void)setMoreButtonTitleColorFromDelegate
@@ -178,11 +180,8 @@
 
 - (void)sizeThingsToFit
 {
-    CGFloat priorMoreOptionButtonFrameWidth = self.cell.moreOptionButton.frame.size.width;
-    CGFloat originalDeleteConfirmationViewWidth = [[self viewLocator] deleteConfirmationView].frame.size.width - priorMoreOptionButtonFrameWidth;
-
     [self sizeMoreOptionButtonToFitText];
-    [self sizeDeleteConfirmationViewToFitMoreButton:originalDeleteConfirmationViewWidth];
+    [self sizeDeleteConfirmationViewToFitMoreButton];
 }
 
 - (void)sizeMoreOptionButtonToFitText
@@ -208,27 +207,30 @@
 - (CGFloat)moreOptionButtonHeight
 {
     UIButton *deleteConfirmationButton = [[self viewLocator] deleteConfirmationButton];
-
     return deleteConfirmationButton.frame.size.height ? deleteConfirmationButton.frame.size.height : [[self viewLocator] deleteConfirmationView].frame.size.height;
 }
 
-- (void)sizeDeleteConfirmationViewToFitMoreButton:(CGFloat)originalDeleteConfirmationViewWidth
+- (void)sizeDeleteConfirmationViewToFitMoreButton
 {
     UIView *deleteConfirmationView = [[self viewLocator] deleteConfirmationView];
-
     CGRect rect = deleteConfirmationView.frame;
 
-    rect.size.width = CGRectGetMaxX(self.cell.moreOptionButton.frame) + originalDeleteConfirmationViewWidth;
-    rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width; // right align
+    rect.size.width = self.cell.moreOptionButton.frame.size.width + rect.size.width; // expand by the size of the more button
+    rect.origin.x = rect.origin.x - rect.size.width; // make the more button on the left of the delete confirmation view by expanding to the left
 
     deleteConfirmationView.frame = rect;
 }
 
 - (void)moreOptionButtonPressed:(id)sender {
-    UITableView *tableView = [[self viewLocator] tableView];
-
     if ([self.cell.delegate respondsToSelector:@selector(tableView:moreOptionButtonPressedInRowAtIndexPath:)]) {
+        UITableView *tableView = [[self viewLocator] tableView];
         [self.cell.delegate tableView:tableView moreOptionButtonPressedInRowAtIndexPath:[[self viewLocator] indexPathInTableView]];
+    }
+}
+
+- (void)teardownActionMenuButtonsIfNeeded {
+    if ([[self viewLocator] deleteConfirmationView] == nil) {
+        _cell.moreOptionButton = nil;
     }
 }
 

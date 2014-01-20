@@ -10,20 +10,16 @@
 
 @interface MSCMoreOptionTableViewCellViewLocator : NSObject
 
-@property (nonatomic, weak) MSCMoreOptionTableViewCell *cell;
-
 - (instancetype)initWithCell:(MSCMoreOptionTableViewCell *)cell;
 
 - (UIView *)deleteConfirmationView;
-
-- (UIScrollView *)findScrollView;
-
+- (UIButton *)deleteConfirmationButton;
 - (UILabel *)deleteButtonLabel;
 
-- (UIButton *)deleteConfirmationButton;
-
 - (UITableView *)tableView;
-
 - (NSIndexPath *)indexPathInTableView;
+
+@property (nonatomic, weak) MSCMoreOptionTableViewCell *cell;
+@property (nonatomic, readonly) UIScrollView *scrollView;
 
 @end

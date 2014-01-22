@@ -32,7 +32,7 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self initFromCoderOrWithStyle];
+        [self commonInit];
     }
     return self;
 }
@@ -40,12 +40,12 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self initFromCoderOrWithStyle];
+        [self commonInit];
     }
     return self;
 }
 
-- (void)initFromCoderOrWithStyle
+- (void)commonInit
 {
     _configurator = [[MSCMoreOptionTableViewCellConfigurator alloc] initWithCell:self];
     _viewLocator = [[MSCMoreOptionTableViewCellViewLocator alloc] initWithCell:self];

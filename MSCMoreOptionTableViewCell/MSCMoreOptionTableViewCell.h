@@ -12,4 +12,7 @@
 
 @property (nonatomic, weak) id<MSCMoreOptionTableViewCellDelegate> delegate;
 
+// should be framework private
+@property (nonatomic, strong) UIButton *moreOptionButton;
+
 @end

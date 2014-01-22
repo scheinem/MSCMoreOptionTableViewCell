@@ -1,0 +1,13 @@
+TODO:
+	- add the new delegate method (widthForMoreButton...) to the README
+	
+	- Cache located views on the ViewLocator, so they aren't looked up everytime we ask for one.
+		[viewLocator locateViews] to cache all of them?
+		or lazy caching, but reset when locateViews is called?
+		or notify of subviews did change so it can invalidate the cache?
+
+	- Automated tests for delegate methods not used in the example
+		titleColorForDeleteConfirmationButtonForRowAtIndexPath
+		backgroundColorForDeleteConfirmationButtonForRowAtIndexPath
+
+		Cucumber? Perhaps attempt automated verification, but also take screenshots for manual verification of the automated tests.

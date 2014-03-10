@@ -53,7 +53,12 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"sublayers"]) {
-        /*
+        if ([self.delegate respondsToSelector:@selector(tableView:canShowMoreAtIndexPath:)]) {
+            if (![self.delegate tableView:self.tableView canShowMoreAtIndexPath: [self.tableView indexPathForCell:self]]) {
+                return;
+            }
+        }
+        /* 
          * Using '==' instead of 'isEqual:' to compare the layer's delegate and the cell's contentScrollView
          * because it must be the same instance and not an equal one.
          */

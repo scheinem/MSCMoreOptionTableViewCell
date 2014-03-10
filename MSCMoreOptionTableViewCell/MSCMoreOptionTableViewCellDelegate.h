@@ -13,6 +13,11 @@
 // "More button"
 
 /*
+ * should show more button on index, default is YES
+ */
+- (BOOL)tableView:(UITableView *)tableView canShowMoreAtIndexPath:(NSIndexPath *)indexPath;
+
+/*
  * Tells the delegate that the "More" button for specified row was pressed.
  */
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;

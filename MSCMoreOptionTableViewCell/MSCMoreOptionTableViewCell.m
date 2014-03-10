@@ -186,8 +186,6 @@
 }
 
 - (void)setMoreOptionButtonTitle:(NSString *)title inDeleteConfirmationView:(UIView *)deleteConfirmationView {
-    CGFloat priorMoreOptionButtonFrameWidth = self.moreOptionButton.frame.size.width;
-
     [self.moreOptionButton setTitle:title forState:UIControlStateNormal];
     [self.moreOptionButton sizeToFit];
 
@@ -208,8 +206,9 @@
     self.moreOptionButton.frame = moreOptionButtonFrame;
 
     CGRect rect = deleteConfirmationView.frame;
-    rect.size.width = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width + (deleteConfirmationView.frame.size.width - priorMoreOptionButtonFrameWidth);
-    rect.origin.x = deleteConfirmationView.superview.bounds.size.width - rect.size.width;
+    rect.origin.x -= self.moreOptionButton.frame.size.width;
+    rect.size.width += self.moreOptionButton.frame.size.width;
+
     deleteConfirmationView.frame = rect;
 }
 

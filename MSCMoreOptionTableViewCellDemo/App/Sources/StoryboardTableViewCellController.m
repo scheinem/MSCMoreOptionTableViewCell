@@ -42,9 +42,20 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"MSCMoreOptionTableViewCell";
     MSCMoreOptionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.delegate = self;
-    
+	cell.delegate = self;
+
+	cell.moreWidth = 90;
+	cell.deleteWidth = 90;
+	cell.showDeleteButton = indexPath.row % 2;
+	
+	[cell setConfigureButtonsBlock:^(UIButton *deleteButton, UIButton *moreButton) {
+		[deleteButton setImage:[UIImage imageNamed:@"trash-normal"] forState:UIControlStateNormal];
+		deleteButton.imageEdgeInsets = UIEdgeInsetsMake(0, 15, 0, 15);
+		
+		[moreButton setTitle:nil forState:UIControlStateNormal];
+		[moreButton setImage:[UIImage imageNamed:@"route-normal"] forState:UIControlStateNormal];
+	}];
+
     cell.textLabel.text = @"Cell";
     
     return cell;
@@ -80,20 +91,16 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return @"Delete";
+    return nil;
 }
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - MSCMoreOptionTableViewCellDelegate
 ////////////////////////////////////////////////////////////////////////
 
-- (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView moreButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath {
     // Called when "MORE" button is pushed.
     NSLog(@"MORE button pushed in row at: %@", indexPath.description);
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return @"More";
 }
 
 @end

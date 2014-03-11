@@ -18,8 +18,8 @@
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented or returning nil the "More" button will not be created and the
- * cell will act like a common UITableViewCell.
+ * If not implemented or returning nil the "More" button will neither be created
+ * nor displayed and the cell will act like a common UITableViewCell.
  *
  * The "More" button also supports multiline titles.
  */

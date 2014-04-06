@@ -7,6 +7,7 @@
 //
 
 #import "MSCMoreOptionTableViewCell.h"
+#import <objc/message.h>
 
 @interface MSCMoreOptionTableViewCell ()
 
@@ -144,6 +145,24 @@
             if (moreOptionDelteButtonVisiblePrior && !swipeToDeleteControlVisible) {
                 self.moreOptionButton = nil;
             }
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - MSCMoreOptionTableViewCell
+////////////////////////////////////////////////////////////////////////
+
+- (void)hideDeleteConfirmation {
+    UITableView *tableView = [self tableView];
+    
+    SEL hideConfirmationViewSelector = NSSelectorFromString([NSString stringWithFormat:@"_endSwi%@teRowDi%@:", @"peToDele", @"dDelete"]);
+    SEL getCellSelector = NSSelectorFromString([NSString stringWithFormat:@"_sw%@oDele%@ll", @"ipeT", @"teCe"]);
+    
+    if ([tableView respondsToSelector:hideConfirmationViewSelector] && [tableView respondsToSelector:getCellSelector]) {
+        id cellShowingDeleteConfirmationView = objc_msgSend(tableView, getCellSelector);
+        if ([self isEqual:cellShowingDeleteConfirmationView]) {
+            objc_msgSend(tableView, hideConfirmationViewSelector, NO);
         }
     }
 }

@@ -24,7 +24,7 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
 }
 ```
 
-If you are using **Storyboards** in your project then take a look at the demo project which includes an working example using a **Storyboard**.
+If you are using **Storyboards** in your project then take a look at the demo project which includes a working example using a **Storyboard**.
 
 ## Add to your project
 
@@ -76,6 +76,10 @@ Both buttons can be customized using the optional delegate methods mentioned abo
 * Xcode 5 or newer
 
 As many other solutions that extend existing functionalities MSCMoreOptionTableViewCell depends on existing vendor code, therefore if Apple change it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
+
+## Alternative Solution
+
+As [pointed out](https://gist.github.com/steipete/10541433) by @steipete there's a solution to achieve the "More" button without any third party code and private API usage. It's a pretty streamlined way but you have to consider that it's also undocumented behaviour and the "Delete"- and "More"-Buttons aren't customizable.
 
 ## Credits
 

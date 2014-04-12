@@ -79,7 +79,7 @@ As many other solutions that extend existing functionalities MSCMoreOptionTableV
 
 ## Alternative Solution
 
-As [pointed out](https://gist.github.com/steipete/10541433) by @steipete there's a solution to achieve the "More" button without any third party code and private API usage. It's a pretty streamlined way but you have to consider that it's also undocumented behaviour and the "Delete"- and "More"-Buttons aren't customizable.
+As [pointed out](https://gist.github.com/steipete/10541433) by [@steipete](https://twitter.com/steipete) there's a solution to achieve the "More" button without any third party code and private API usage. It's a pretty streamlined way but you have to consider that it's undocumented behaviour and the "Delete" and "More" buttons aren't customizable.
 
 ## Credits
 
@@ -89,3 +89,10 @@ MSCMoreOptionTableViewCell was created by [Manfred Scheiner](https://github.com/
 
 MSCMoreOptionTableViewCell is available under the MIT license. See the LICENSE file for more info.
 For usage without attribution contact [Manfred Scheiner](mailto:sayhi@scheinem.com).
+
+## Apps using MSCMoreOptionTableViewCell
+
+* [Fantastical 2](http://flexibits.com/fantastical-iphone)
+* [SRB Mobile CRM](http://getmobile.srb.at)
+* [An In-House application of Brau Union Österreich AG](https://www.youtube.com/watch?v=DEaJwoVzAaw)
+* If your app is missing here just add it and send a pull request :)

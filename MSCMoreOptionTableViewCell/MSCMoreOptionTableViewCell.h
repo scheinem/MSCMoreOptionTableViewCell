@@ -12,4 +12,6 @@
 
 @property (nonatomic, weak) id<MSCMoreOptionTableViewCellDelegate> delegate;
 
+- (void)hideDeleteConfirmation;
+
 @end

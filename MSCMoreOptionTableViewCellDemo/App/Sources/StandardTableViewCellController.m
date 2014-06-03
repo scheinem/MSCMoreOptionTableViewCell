@@ -11,6 +11,8 @@
 
 @interface StandardTableViewCellController () <MSCMoreOptionTableViewCellDelegate>
 
+@property (nonatomic, strong) MSCMoreOptionTableViewCell *swipedCell;
+
 @end
 
 @implementation StandardTableViewCellController
@@ -54,8 +56,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Called when "DELETE" button is pushed.
-    NSLog(@"DELETE button pushed in row at: %@", indexPath.description);
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Called when "DELETE" button is pushed.
+        NSLog(@"DELETE button pushed in row at: %@", indexPath.description);
+        // Hide more- and delete-confirmation view
+        [tableView.visibleCells enumerateObjectsUsingBlock:^(MSCMoreOptionTableViewCell *cell, NSUInteger idx, BOOL *stop) {
+            if ([[tableView indexPathForCell:cell] isEqual:indexPath]) {
+                [cell hideDeleteConfirmation];
+            }
+        }];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -93,6 +103,12 @@
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath {
     // Called when "MORE" button is pushed.
     NSLog(@"MORE button pushed in row at: %@", indexPath.description);
+    // Hide more- and delete-confirmation view
+    [tableView.visibleCells enumerateObjectsUsingBlock:^(MSCMoreOptionTableViewCell *cell, NSUInteger idx, BOOL *stop) {
+        if ([[tableView indexPathForCell:cell] isEqual:indexPath]) {
+            [cell hideDeleteConfirmation];
+        }
+    }];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath {

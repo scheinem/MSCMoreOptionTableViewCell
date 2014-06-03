@@ -24,7 +24,7 @@ If you are using a custom UITableViewCell subclass then change it to inherit fro
 }
 ```
 
-If you are using **Storyboards** in your project then take a look at the demo project which includes an working example using a **Storyboard**.
+If you are using **Storyboards** in your project then take a look at the demo project which includes a working example using a **Storyboard**.
 
 ## Add to your project
 
@@ -77,6 +77,10 @@ Both buttons can be customized using the optional delegate methods mentioned abo
 
 As many other solutions that extend existing functionalities MSCMoreOptionTableViewCell depends on existing vendor code, therefore if Apple change it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
 
+## Alternative Solution
+
+As [pointed out](https://gist.github.com/steipete/10541433) by [@steipete](https://twitter.com/steipete) there's a solution to achieve the "More" button without any third party code and private API usage. It's a pretty streamlined way but you have to consider that it's undocumented behaviour and the "Delete" and "More" buttons aren't customizable.
+
 ## Credits
 
 MSCMoreOptionTableViewCell was created by [Manfred Scheiner](https://github.com/scheinem/) ([@scheinem](http://twitter.com/scheinem) - [scheinem.com](http://scheinem.com)). Of course there is also a [full list of all contributors](https://github.com/scheinem/MSCMoreOptionTableViewCell/graphs/contributors) available.
@@ -85,3 +89,10 @@ MSCMoreOptionTableViewCell was created by [Manfred Scheiner](https://github.com/
 
 MSCMoreOptionTableViewCell is available under the MIT license. See the LICENSE file for more info.
 For usage without attribution contact [Manfred Scheiner](mailto:sayhi@scheinem.com).
+
+## Apps using MSCMoreOptionTableViewCell
+
+* [Fantastical 2](http://flexibits.com/fantastical-iphone)
+* [SRB Mobile CRM](http://getmobile.srb.at)
+* [An In-House application of Brau Union Österreich AG](https://www.youtube.com/watch?v=DEaJwoVzAaw)
+* If your app is missing here just add it and send a pull request :)

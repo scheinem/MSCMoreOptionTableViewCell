@@ -27,6 +27,8 @@
     if (self) {
         _moreOptionButton = nil;
         _cellScrollView = nil;
+        _moreOptionButtonMinimumWidth = 0.f;
+        _moreOptionButtonHorizontalPadding = 15.f;
 
         [self setupMoreOption];
     }
@@ -38,6 +40,8 @@
     if (self) {
         _moreOptionButton = nil;
         _cellScrollView = nil;
+        _moreOptionButtonMinimumWidth = 0.f;
+        _moreOptionButtonHorizontalPadding = 15.f;
 
         [self setupMoreOption];
     }
@@ -228,7 +232,7 @@
     [self.moreOptionButton sizeToFit];
     
     CGRect moreOptionButtonFrame = CGRectZero;
-    moreOptionButtonFrame.size.width = self.moreOptionButton.frame.size.width + 30.f;
+    moreOptionButtonFrame.size.width = self.moreOptionButton.frame.size.width + 2 * self.moreOptionButtonHorizontalPadding;
     /*
      * Look for the 'Delete' button to apply it's height also to the 'More' button.
      * If it can't be found there is a fallback to the deleteConfirmationView's height.
@@ -241,6 +245,10 @@
     if (moreOptionButtonFrame.size.height == 0.f) {
         moreOptionButtonFrame.size.height = deleteConfirmationView.frame.size.height;
     }
+    
+    // Set the "More" button's width to the maximum value of 'fitting size' and 'moreOptionButtonMinimumWidth'.
+    moreOptionButtonFrame.size.width = MAX(moreOptionButtonFrame.size.width, self.moreOptionButtonMinimumWidth);
+    
     self.moreOptionButton.frame = moreOptionButtonFrame;
     
     CGRect rect = deleteConfirmationView.frame;

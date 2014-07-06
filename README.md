@@ -61,10 +61,17 @@ To hide the more or delete button for specific cells, use the `showMoreButton` a
 
 ## Compatibility and Requirements
 
-* iOS 7 or newer
+* iOS 7
 * Xcode 5 or newer
 
-As many other solutions that extend existing functionalities MSCMoreOptionTableViewCell depends on existing vendor code, therefore if Apple change it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
+As many other solutions that extend existing functionalities MSCMoreOptionTableViewCell depends on existing vendor code, therefore if Apple changes it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
+
+### iOS 8
+
+There are two steps needed to fully support iOS 8:
+
+1. Hijack the new 'swipe to delete'-view hierachy => DONE
+2. Fix sizing of the buttons => Seems a bit complicated because the UIScrollView is gone and the 'swipe to delete'-views are layouted as defaulted by UIKit everytime ```layoutSubviews:``` gets called.
 
 ## Alternative Solutions
 

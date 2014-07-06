@@ -34,30 +34,46 @@ If you are using **Storyboards** in your project then take a look at the demo pr
 4. Add MSCMoreOptionTableViewCell to your target's linked frameworks (Target >> Summary >> Linked Frameworks and Libraries).
 5. Import "MSCMoreOptionTableViewCell.h" either in Prefix.pch or separately in any file you use it.
 
-## Delegate
+## Detect when button gets pressed
 
+### 'More'
 The optional delegate method is called if the more button is pressed.
 
 ```objective-c
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 ```
  
- The tapped delete button is signaled via the standard `-tableView:commitEditingStyle:forRowAtIndexPath:` method of `UITableViewDataSource`.
+### 'Delete'
+
+The tapped delete button is signaled via the standard `-tableView:commitEditingStyle:forRowAtIndexPath:` method of `UITableViewDataSource`.
  
 ## Customizing
 
-Both buttons can be completely customized using the `configureButtonsBlock`:
+### Delegate
 
-	[cell setConfigureButtonsBlock:^(UIButton *deleteButton, UIButton *moreButton) {
-		[deleteButton setImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
-		deleteButton.imageEdgeInsets = UIEdgeInsetsMake(0, 15, 0, 15);
-		
-		[moreButton setTitle:nil forState:UIControlStateNormal];
-		[moreButton setImage:[UIImage imageNamed:@"more"] forState:UIControlStateNormal];
-	}];
+There are several optional delegate methods to customize the "Delete" and the "More" button. Check out `MSCMoreOptionTableViewCellDelegate.h` inline documentation for details.
 
-The width of the buttons can be overridden using the `moreWidth` and `deleteWidth` properties.
-To hide the more or delete button for specific cells, use the `showMoreButton` and `showDeleteButton` properties.
+### Block based
+
+Both buttons can be completely customized using the `configurationBlock`:
+
+```objective-c
+[cell setConfigureButtonsBlock:^(UIButton *deleteButton, UIButton *moreButton, CGFloat *deleteButtonWitdh, CGFloat *moreOptionButtonWidth) {
+    // Hide delete button every second row
+    *deleteButtonWitdh = (indexPath.row - 1) % 2 == 0? 0.f : *deleteButtonWitdh;
+        
+    // Give the 'More' button a orange background every third row
+    moreOptionButton.backgroundColor = (indexPath.row - 2) % 3 == 0 ? [UIColor orangeColor] : moreOptionButton.backgroundColor;
+        
+    // Set a trash icon as 'Delete' button content
+    [deleteButton setTitle:nil forState:UIControlStateNormal];
+    [deleteButton setImage:[UIImage imageNamed:@"Trash.png"] forState:UIControlStateNormal];
+    [deleteButton setImageEdgeInsets:UIEdgeInsetsMake(0.f, 20.f, 0.f, 20.f)];
+];
+```
+By default `deleteButtonWidth` and `moreOptionButtonWidth` will be `MSCMoreOptionTableViewCellButtonWidthSizeToFit` the button's width will be calculated like `contentSize + edgeInsets`.
+
+To hide a button set it's width to 0.
 
 ## Compatibility and Requirements
 

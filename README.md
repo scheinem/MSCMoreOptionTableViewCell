@@ -36,39 +36,28 @@ If you are using **Storyboards** in your project then take a look at the demo pr
 
 ## Delegate
 
-### Required
-
-None.
-
-### Optional
+The optional delegate method is called if the more button is pressed.
 
 ```objective-c
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 ```
-
-```objective-c
-- (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
-```
-
-```objective-c
-- (UIColor *)tableView:(UITableView *)tableView titleColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
-```
-
-```objective-c
-- (UIColor *)tableView:(UITableView *)tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
-```
-
-```objective-c
-- (UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
-```
-
-```objective-c
-- (UIColor *)tableView:(UITableView *)tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
-```
-
+ 
+ The tapped delete button is signaled via the standard `-tableView:commitEditingStyle:forRowAtIndexPath:` method of `UITableViewDataSource`.
+ 
 ## Customizing
 
-Both buttons can be customized using the optional delegate methods mentioned above.
+Both buttons can be completely customized using the `configureButtonsBlock`:
+
+	[cell setConfigureButtonsBlock:^(UIButton *deleteButton, UIButton *moreButton) {
+		[deleteButton setImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
+		deleteButton.imageEdgeInsets = UIEdgeInsetsMake(0, 15, 0, 15);
+		
+		[moreButton setTitle:nil forState:UIControlStateNormal];
+		[moreButton setImage:[UIImage imageNamed:@"more"] forState:UIControlStateNormal];
+	}];
+
+The width of the buttons can be overridden using the `moreWidth` and `deleteWidth` properties.
+To hide the more or delete button for specific cells, use the `showMoreButton` and `showDeleteButton` properties.
 
 ## Compatibility and Requirements
 

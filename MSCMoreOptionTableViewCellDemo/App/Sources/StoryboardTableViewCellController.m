@@ -42,9 +42,21 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"MSCMoreOptionTableViewCell";
     MSCMoreOptionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.delegate = self;
-    
+	cell.delegate = self;
+	
+	[cell setConfigurationBlock:^(UIButton *deleteButton, UIButton *moreOptionButton, CGFloat *deleteButtonWitdh, CGFloat *moreOptionButtonWidth) {
+        // Hide delete button every second row
+        *deleteButtonWitdh = (indexPath.row - 1) % 2 == 0? 0.f : *deleteButtonWitdh;
+        
+        // Give the 'More' button a orange background every third row
+        moreOptionButton.backgroundColor = (indexPath.row - 2) % 3 == 0 ? [UIColor orangeColor] : moreOptionButton.backgroundColor;
+        
+        // Set a trash icon as 'Delete' button content
+        [deleteButton setTitle:nil forState:UIControlStateNormal];
+        [deleteButton setImage:[UIImage imageNamed:@"Trash.png"] forState:UIControlStateNormal];
+        [deleteButton setImageEdgeInsets:UIEdgeInsetsMake(0.f, 20.f, 0.f, 20.f)];
+	}];
+
     cell.textLabel.text = @"Cell";
     
     return cell;
@@ -53,7 +65,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Called when "DELETE" button is pushed.
-        NSLog(@"DELETE button pushed in row at: %@", indexPath.description);
+        NSLog(@"DELETE button pressed in row at: %@", indexPath.description);
         // Hide more- and delete-confirmation view
         [tableView.visibleCells enumerateObjectsUsingBlock:^(MSCMoreOptionTableViewCell *cell, NSUInteger idx, BOOL *stop) {
             if ([[tableView indexPathForCell:cell] isEqual:indexPath]) {
@@ -87,8 +99,8 @@
     return UITableViewCellEditingStyleDelete;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return @"Delete";
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -96,8 +108,8 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Called when "MORE" button is pushed.
-    NSLog(@"MORE button pushed in row at: %@", indexPath.description);
+    // Called when 'More' button is pushed.
+    NSLog(@"MORE button pressed in row at: %@", indexPath.description);
     // Hide more- and delete-confirmation view
     [tableView.visibleCells enumerateObjectsUsingBlock:^(MSCMoreOptionTableViewCell *cell, NSUInteger idx, BOOL *stop) {
         if ([[tableView indexPathForCell:cell] isEqual:indexPath]) {

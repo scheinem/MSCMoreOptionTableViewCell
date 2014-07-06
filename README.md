@@ -58,7 +58,7 @@ There are several optional delegate methods to customize the "Delete" and the "M
 Both buttons can be completely customized using the `configurationBlock`:
 
 ```objective-c
-[cell setConfigureButtonsBlock:^(UIButton *deleteButton, UIButton *moreButton, CGFloat *deleteButtonWitdh, CGFloat *moreOptionButtonWidth) {
+[cell setConfigureButtonsBlock:^(UIButton *deleteButton, UIButton *moreOptionButton, CGFloat *deleteButtonWitdh, CGFloat *moreOptionButtonWidth) {
     // Hide delete button every second row
     *deleteButtonWitdh = (indexPath.row - 1) % 2 == 0? 0.f : *deleteButtonWitdh;
         

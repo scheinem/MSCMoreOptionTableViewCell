@@ -3,7 +3,7 @@
 //  MSCMoreOptionTableViewCell
 //
 //  Created by Manfred Scheiner (@scheinem) on 20.08.13.
-//  Copyright (c) 2013 Manfred Scheiner (@scheinem). All rights reserved.
+//  Copyright (c) 2014 Manfred Scheiner (@scheinem). All rights reserved.
 //
 
 #import "MSCMoreOptionTableViewCell.h"
@@ -51,14 +51,14 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
 }
 
 ////////////////////////////////////////////////////////////////////////
-#pragma mark - UIView
+#pragma mark - UIView | iOS 8 functionality
 ////////////////////////////////////////////////////////////////////////
 
 - (void)insertSubview:(UIView *)view atIndex:(NSInteger)index {
     NSString *className = NSStringFromClass(view.class);
     if ([className hasPrefix:@"UI"] && [className hasSuffix:@"ConfirmationView"]) {
-        /**
-         * Only provide 'MSDMoreOptionTableViewCell' functionality when iOS 8's new
+        /*
+         * Only provide 'MSCMoreOptionTableViewCell' functionality when iOS 8's new
          * 'tableView:editActionsForRowAtIndexPath:' isn't used.
          *
          * For a sample implementation of this new functionality take a look at:
@@ -68,12 +68,25 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
 #pragma clang diagnostic ignored "-Wundeclared-selector"
         if (![[self tableView].delegate respondsToSelector:@selector(tableView:editActionsForRowAtIndexPath:)]) {
 #pragma clang diagnostic pop
-            UIButton *button = view.subviews.firstObject;
+            /*
+             * Get '_UITableViewCellActionButton' instance which represents the "delete"
+             * button. Therefore the parallel usage of 'tableView:editActionsForRowAtIndexPath:'
+             * isn't possible because the "delete" button can't be distinguished from the other
+             * action buttons.
+             */
+            __block UIButton *button = nil;
+            [view.subviews enumerateObjectsUsingBlock:^(UIView *subview, NSUInteger idx, BOOL *stop) {
+                if ([NSStringFromClass(subview.class) hasPrefix:@"_"] &&
+                    [NSStringFromClass(subview.class) hasSuffix:@"Button"]) {
+                    button = (UIButton *)subview;
+                    *stop = YES;
+                }
+            }];
             
             [self configureMoreOptionButtonForDeleteConfirmationView:view
                                         withDeleteConfirmationButton:button];
             
-            /**
+            /*
              * A little bit of obfuscation for the non public initializer 'initWithFrame:actionButtons:contentSize:'.
              * The initializer must be called because the property 'contentSize' isn't accessiable through a setter.
              */
@@ -85,8 +98,18 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     [super insertSubview:view atIndex:index];
 }
 
+- (void)willRemoveSubview:(UIView *)subview {
+    [super willRemoveSubview:subview];
+    
+    // Set the 'more' button to nil if the 'swipe to delete' container view won't be visible anymore.
+    NSString *className = NSStringFromClass(subview.class);
+    if ([className hasPrefix:@"UI"] && [className hasSuffix:@"ConfirmationView"]) {
+        self.moreOptionButton = nil;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////
-#pragma mark - NSObject(NSKeyValueObserving)
+#pragma mark - NSObject(NSKeyValueObserving) | iOS 7 functionality
 ////////////////////////////////////////////////////////////////////////
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -127,8 +150,8 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
                     }
                 }
             }
-            // Set the 'More' button to nil if the 'swipe to delete' container view isn't visible anymore.
-            if (self.moreOptionButton && !swipeToDeleteControlVisible) {
+            // Set the 'more' button to nil if the 'swipe to delete' container view isn't visible anymore.
+            if (!swipeToDeleteControlVisible) {
                 self.moreOptionButton = nil;
             }
         }
@@ -164,8 +187,8 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     
     /*
      * 'Normalize' 'UITableViewCellDeleteConfirmationView's' title text implementation, because
-     * UIKit itself doesn't show the text using it's 'UIButtonLabel's' setTitle: but using an
-     * seperate 'UILabel'
+     * under iOS 7 UIKit itself doesn't show the text using it's 'UIButtonLabel's' setTitle: but 
+     * using a seperate 'UILabel'.
      *
      * WHY Apple, WHY?
      *
@@ -257,7 +280,7 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
             }
             [self.moreOptionButton setBackgroundColor:backgroundColor];
             
-            // Try to get 'More' edgeInsets from delegate (default: (0, 15, 0, 15))
+            // Try to get 'more' edgeInsets from delegate (default: (0, 15, 0, 15))
             if ([strongDelegate respondsToSelector:@selector(tableView:edgeInsetsForMoreOptionButtonForRowAtIndexPath:)]) {
                 
                 UIEdgeInsets edgeInsets = [strongDelegate tableView:tableView
@@ -272,7 +295,7 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
                                     deleteConfirmationButtonWidth:MSCMoreOptionTableViewCellButtonWidthSizeToFit
                                             moreOptionButtonWidth:MSCMoreOptionTableViewCellButtonWidthSizeToFit];
             
-            /* Try to get the 'More' minimum width and set the 'More' button's width to the
+            /* Try to get the 'more' minimum width and set the 'more' button's width to the
              * maximum value of 'fitting size' and the minimum width returned by the delegate.
              */
             if ([strongDelegate respondsToSelector:@selector(tableView:minimumWidthForMoreOptionButtonForRowAtIndexPath:)]) {
@@ -303,22 +326,20 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     }
     
     
-    // If created add the 'More' button to the cell's view hierarchy
+    // If created add the 'more' button to the cell's view hierarchy
     if (self.moreOptionButton) {
         [deleteConfirmationView addSubview:self.moreOptionButton];
     }
 }
 
-
-
 - (void)sizeMoreOptionButtonAndDeleteConfirmationButton:(UIButton *)deleteConfirmationButton
                           deleteConfirmationButtonWidth:(CGFloat)deleteConfirmationButtonWidth
                                   moreOptionButtonWidth:(CGFloat)moreOptionButtonWidth {
     
-    // Get 'Delete' button height calculated by UIKit.
+    // Get 'delete' button height calculated by UIKit.
     CGFloat deleteConfirmationButtonHeight = deleteConfirmationButton.frame.size.height;
     
-    // Size 'More' button
+    // Size 'more' button
     CGRect moreButtonFrame = CGRectZero;
     moreButtonFrame.size = [self.moreOptionButton intrinsicContentSize];
     
@@ -332,7 +353,7 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     moreButtonFrame.size.height = deleteConfirmationButtonHeight;
     self.moreOptionButton.frame = moreButtonFrame;
     
-    // Size 'Delete' button
+    // Size 'delete' button
     CGRect deleteButtonFrame = CGRectZero;
     deleteButtonFrame.size = [deleteConfirmationButton intrinsicContentSize];
     
@@ -350,7 +371,7 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     CGRect deleteConfirmationFrame = deleteConfirmationView.frame;
     CGFloat oldDeleteConfirmationFrameSuperViewWidth = deleteConfirmationFrame.origin.x + deleteConfirmationFrame.size.width;
     
-    // Fix 'Delete' button's origin.x and set the frame
+    // Fix 'delete' button's origin.x and set the frame
     deleteButtonFrame.origin.x = deleteConfirmationFrame.size.width - deleteButtonFrame.size.width;
     deleteConfirmationButton.frame = deleteButtonFrame;
     
@@ -382,11 +403,11 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
 }
 
 - (UIButton *)freshMoreOptionButton {
-    // Initialize the 'More' button.
+    // Initialize the 'more' button.
     UIButton *freshMoreOptionButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [freshMoreOptionButton addTarget:self action:@selector(moreOptionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    // Set 'More' button's numberOfLines to 0 to enable support for multiline titles.
+    // Set 'more' button's numberOfLines to 0 to enable support for multiline titles.
     freshMoreOptionButton.titleLabel.numberOfLines = 0;
     
     return freshMoreOptionButton;
@@ -408,12 +429,12 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
      *
      * UIDeleteConfirmationView will get added to the cell directly.
      * So there is no need for KVO anymore and we can use 
-     * 'insertSubview:atIndex:' instead.
+     * 'insertSubview:atIndex:' and 'willRemoveSubview:' instead.
      */
     for (CALayer *layer in self.layer.sublayers) {
         if ([layer.delegate isKindOfClass:[UIScrollView class]]) {
             _cellScrollView = (UIScrollView *)layer.delegate;
-            [(UIScrollView *)layer.delegate addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
+            [_cellScrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
             break;
         }
     }

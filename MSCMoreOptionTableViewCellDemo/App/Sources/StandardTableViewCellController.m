@@ -3,7 +3,7 @@
 //  MSCMoreOptionTableViewCellDemo
 //
 //  Created by Manfred Scheiner (@scheinem) on 22.08.13.
-//  Copyright (c) 2013 Manfred Scheiner (@scheinem). All rights reserved.
+//  Copyright (c) 2014 Manfred Scheiner (@scheinem). All rights reserved.
 //
 
 #import "StandardTableViewCellController.h"
@@ -21,7 +21,7 @@
 #pragma mark - Initializer
 ////////////////////////////////////////////////////////////////////////
 
-- (id)initWithStyle:(UITableViewStyle)style {
+- (instancetype)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
     }
@@ -57,9 +57,9 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Called when "DELETE" button is pushed.
+        // Called when 'delete' button is pushed.
         NSLog(@"DELETE button pushed in row at: %@", indexPath.description);
-        // Hide more- and delete-confirmation view
+        // Hide 'more'- and 'delete'-confirmation view
         [tableView.visibleCells enumerateObjectsUsingBlock:^(MSCMoreOptionTableViewCell *cell, NSUInteger idx, BOOL *stop) {
             if ([[tableView indexPathForCell:cell] isEqual:indexPath]) {
                 [cell hideDeleteConfirmation];
@@ -101,9 +101,9 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Called when "MORE" button is pushed.
+    // Called when 'more' button is pushed.
     NSLog(@"MORE button pushed in row at: %@", indexPath.description);
-    // Hide more- and delete-confirmation view
+    // Hide 'more'- and 'delete'-confirmation view
     [tableView.visibleCells enumerateObjectsUsingBlock:^(MSCMoreOptionTableViewCell *cell, NSUInteger idx, BOOL *stop) {
         if ([[tableView indexPathForCell:cell] isEqual:indexPath]) {
             [cell hideDeleteConfirmation];

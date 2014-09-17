@@ -10,10 +10,10 @@
 
 @optional
 
-// 'More' button
+// 'more' button
 
 /*
- * Tells the delegate that the "More" button for specified row was pressed.
+ * Tells the delegate that the 'more' button for specified row was pressed.
  */
 - (void)tableView:(UITableView *)tableView moreOptionButtonPressedInRowAtIndexPath:(NSIndexPath *)indexPath;
 
@@ -32,59 +32,59 @@
  *
  * When property 'configurationBlock' is set (NOT nil):
  * ====================================================
- * The 'More' button will be created then customized using the delegate methods,
+ * The 'more' button will be created then customized using the delegate methods,
  * passed to the configuration block and added to the view hierarchy afterwards.
  *
  * NOTE:
  * =====
- * The 'More' button also supports multiline titles.
+ * The 'more' button also supports multiline titles.
  *
  */
 - (NSString *)tableView:(UITableView *)tableView titleForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented or returning nil the 'More' button will have [UIColor whiteColor]
+ * If not implemented or returning nil the 'more' button will have [UIColor whiteColor]
  * as titleColor.
  *
  */
 - (UIColor *)tableView:(UITableView *)tableView titleColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented or returning nil the 'More' button will have [UIColor lightGrayColor]
+ * If not implemented or returning nil the 'more' button will have [UIColor lightGrayColor]
  * as backgroundColor.
  *
  */
 - (UIColor *)tableView:(UITableView *)tableView backgroundColorForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented or returning a lower value than the 'More' button's 'fitting' value,
+ * If not implemented or returning a lower value than the 'more' button's 'fitting' value,
  * the 'More' button width will not be changed.
  *
  */
 - (CGFloat)tableView:(UITableView *)tableView minimumWidthForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented the 'More' button will have (0, 15, 0, 15) as 'edgeInsets'.
+ * If not implemented the 'more' button will have (0, 15, 0, 15) as 'edgeInsets'.
  *
  */
 - (UIEdgeInsets)tableView:(UITableView *)tableView edgeInsetsForMoreOptionButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
-// 'Delete' button
+// 'delete' button
 
 /*
- * If not implemented or returning nil the 'Delete' button will have it's default backgroundColor.
+ * If not implemented or returning nil the 'delete' button will have it's default backgroundColor.
  *
  */
 - (UIColor *)tableView:(UITableView *)tableView backgroundColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented or returning nil the 'Delete' button will have it's default titleColor.
+ * If not implemented or returning nil the 'delete' button will have it's default titleColor.
  *
  */
 - (UIColor *)tableView:(UITableView *)tableView titleColorForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /*
- * If not implemented the 'Delete' button will have (0, 15, 0, 15) as 'edgeInsets'.
+ * If not implemented the 'delete' button will have (0, 15, 0, 15) as 'edgeInsets'.
  *
  */
 - (UIEdgeInsets)tableView:(UITableView *)tableView edgeInsetsForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath;

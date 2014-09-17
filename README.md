@@ -1,6 +1,8 @@
 MSCMoreOptionTableViewCell
 ==========================
 
+**Fully compatible to iOS 7 & iOS 8**
+
 Drop-in solution to achieve the "More" button in an UITableView's "swipe to delete"-menu (as seen in the Mail.app) by extending Apple's own "swipe to delete"-implementation and not rewriting it, so UITableView's standard behaviour isn't changed.
 
 ![Screenshot](https://raw.github.com/scheinem/MSCMoreOptionTableViewCell/master/MSCMoreOptionTableViewCell.png)
@@ -77,17 +79,10 @@ To hide a button set it's width to 0.
 
 ## Compatibility and Requirements
 
-* iOS 7
+* iOS 7 and iOS 8
 * Xcode 5 or newer
 
 As many other solutions that extend existing functionalities MSCMoreOptionTableViewCell depends on existing vendor code, therefore if Apple changes it's "swipe to delete"-implementation significant in future iOS releases, it could happen that the "More" button doesn't appear until MSCMoreOptionTableViewCell gets adopted. But it's important for you as developer to know that MSCMoreOptionTableViewCell can't break your App or UITableView's standard functionality because of changes on the "swipe to delete"-implementation from Apple.
-
-### iOS 8
-
-There are two steps needed to fully support iOS 8:
-
-1. Hijack the new 'swipe to delete'-view hierachy => DONE
-2. Fix sizing of the buttons => Seems a bit complicated because the UIScrollView is gone and the 'swipe to delete'-views are layouted as defaulted by UIKit everytime ```layoutSubviews:``` gets called.
 
 ## Alternative Solutions
 
@@ -111,6 +106,5 @@ For usage without attribution contact [Manfred Scheiner](mailto:sayhi@scheinem.c
 ## Apps using MSCMoreOptionTableViewCell
 
 * [Fantastical 2](http://flexibits.com/fantastical-iphone)
-* [SRB Mobile CRM](http://getmobile.srb.at)
-* [An In-House application of Brau Union Österreich AG](https://www.youtube.com/watch?v=DEaJwoVzAaw)
+* [Where To?](http://www.futuretap.com/de/apps/whereto)
 * If your app is missing here just add it and send a pull request :)

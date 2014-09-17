@@ -29,6 +29,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		75AB50239BDE30B0401D2A48 /* MSCMoreOptionTableViewCellConfigurator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSCMoreOptionTableViewCellConfigurator.h; sourceTree = "<group>"; };
+		75AB550F83652B6BD9BDCD76 /* MSCMoreOptionTableViewCellConfigurator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSCMoreOptionTableViewCellConfigurator.m; sourceTree = "<group>"; };
+		75AB589DDB8FB69536E29723 /* MSCMoreOptionTableViewCellViewLocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSCMoreOptionTableViewCellViewLocator.h; sourceTree = "<group>"; };
+		75AB5ACFBA4FB7290ACE66F7 /* MSCMoreOptionTableViewCellViewLocator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSCMoreOptionTableViewCellViewLocator.m; sourceTree = "<group>"; };
 		B78F0FB817C611FD000F8B94 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B78F0FBA17C6120A000F8B94 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		B7D0EFC017C254DB009972B8 /* libMSCMoreOptionTableViewCell.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMSCMoreOptionTableViewCell.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +94,10 @@
 				B7D0EFCA17C254DB009972B8 /* MSCMoreOptionTableViewCell.m */,
 				B7F2F3E517C39D0000E1573B /* MSCMoreOptionTableViewCellDelegate.h */,
 				B7D0EFC617C254DB009972B8 /* Supporting Files */,
+				75AB550F83652B6BD9BDCD76 /* MSCMoreOptionTableViewCellConfigurator.m */,
+				75AB50239BDE30B0401D2A48 /* MSCMoreOptionTableViewCellConfigurator.h */,
+				75AB5ACFBA4FB7290ACE66F7 /* MSCMoreOptionTableViewCellViewLocator.m */,
+				75AB589DDB8FB69536E29723 /* MSCMoreOptionTableViewCellViewLocator.h */,
 			);
 			path = MSCMoreOptionTableViewCell;
 			sourceTree = "<group>";

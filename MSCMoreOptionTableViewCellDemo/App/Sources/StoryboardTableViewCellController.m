@@ -45,16 +45,18 @@
 	cell.delegate = self;
 	
 	[cell setConfigurationBlock:^(UIButton *deleteButton, UIButton *moreOptionButton, CGFloat *deleteButtonWitdh, CGFloat *moreOptionButtonWidth) {
-        // Hide delete button every second row
-        *deleteButtonWitdh = (indexPath.row - 1) % 2 == 0? 0.f : *deleteButtonWitdh;
+        // Hide delete button every second row (odd-numbered)
+        *deleteButtonWitdh = (indexPath.row - 1) % 2 == 0 ? 0.f : *deleteButtonWitdh;
         
         // Give the 'more' button an orange background every third row
         moreOptionButton.backgroundColor = (indexPath.row - 2) % 3 == 0 ? [UIColor orangeColor] : moreOptionButton.backgroundColor;
         
-        // Set a trash icon as 'delete' button content
-        [deleteButton setTitle:nil forState:UIControlStateNormal];
-        [deleteButton setImage:[UIImage imageNamed:@"Trash.png"] forState:UIControlStateNormal];
-        [deleteButton setImageEdgeInsets:UIEdgeInsetsMake(0.f, 20.f, 0.f, 20.f)];
+        // Set a trash icon as 'delete' button content on every fourth row
+        if (indexPath.row % 4 == 0) {
+            [deleteButton setTitle:nil forState:UIControlStateNormal];
+            [deleteButton setImage:[UIImage imageNamed:@"Trash.png"] forState:UIControlStateNormal];
+            [deleteButton setImageEdgeInsets:UIEdgeInsetsMake(0.f, 20.f, 0.f, 20.f)];
+        }
 	}];
 
     cell.textLabel.text = @"Cell";
@@ -92,7 +94,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 65.f;
+    return 64.f;
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -193,18 +193,26 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
      * WHY Apple, WHY?
      *
      */
-    __block NSString *deleteConfirmationButtonTitle = nil;
     [deleteConfirmationButton.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
         if ([view class] == [UILabel class]) {
             UILabel *titleLabel = (UILabel *)view;
-            deleteConfirmationButtonTitle = titleLabel.text;
+            NSString *deleteConfirmationButtonTitle = titleLabel.text;
             [titleLabel removeFromSuperview];
             titleLabel = nil;
+            
+            [deleteConfirmationButton setTitle:deleteConfirmationButtonTitle forState:UIControlStateNormal];
+            
+            // Needed because otherwise the sizing algorithm wouldn't work for iOS 7
+            deleteConfirmationButton.autoresizingMask = UIViewAutoresizingNone;
+            
             *stop = YES;
         }
     }];
+    // Set default titleEdgeInsets on 'delete' button
     [deleteConfirmationButton setTitleEdgeInsets:UIEdgeInsetsMake(0.f, 15.f, 0.f, 15.f)];
-    [deleteConfirmationButton setTitle:deleteConfirmationButtonTitle forState:UIControlStateNormal];
+    // Set clipsToBounds to YES on 'delete' button is necessary because otherwise it wouldn't
+    // be possible to hide it settings it's frame's width to zero (the title would appear anyway).
+    deleteConfirmationButton.clipsToBounds = YES;
     
     // Need to get the delegate as strong variable because it's a weak property
     id<MSCMoreOptionTableViewCellDelegate> strongDelegate = self.delegate;
@@ -325,7 +333,6 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
                                         moreOptionButtonWidth:moreOptionButtonWidth];
     }
     
-    
     // If created add the 'more' button to the cell's view hierarchy
     if (self.moreOptionButton) {
         [deleteConfirmationView addSubview:self.moreOptionButton];
@@ -372,7 +379,7 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     CGFloat oldDeleteConfirmationFrameSuperViewWidth = deleteConfirmationFrame.origin.x + deleteConfirmationFrame.size.width;
     
     // Fix 'delete' button's origin.x and set the frame
-    deleteButtonFrame.origin.x = deleteConfirmationFrame.size.width - deleteButtonFrame.size.width;
+    deleteButtonFrame.origin.x = self.moreOptionButton.frame.origin.x + self.moreOptionButton.frame.size.width;
     deleteConfirmationButton.frame = deleteButtonFrame;
     
     // Adjust the 'UITableViewCellDeleteConfirmationView's' frame to fit the new button sizes.
@@ -409,6 +416,10 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     
     // Set 'more' button's numberOfLines to 0 to enable support for multiline titles.
     freshMoreOptionButton.titleLabel.numberOfLines = 0;
+    
+    // Set clipsToBounds to YES is necessary because otherwise it wouldn't be possible
+    // to hide it settings it's frame's width to zero (the title would appear anyway).
+    freshMoreOptionButton.clipsToBounds = YES;
     
     return freshMoreOptionButton;
 }

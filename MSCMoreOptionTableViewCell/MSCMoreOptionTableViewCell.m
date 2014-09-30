@@ -10,6 +10,7 @@
 #import <objc/message.h>
 
 const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
+static char kMSCMoreOptionTableViewCellKVOContext = 0;
 
 @interface MSCMoreOptionTableViewCell ()
 
@@ -47,7 +48,7 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
 }
 
 - (void)dealloc {
-    [self.cellScrollView.layer removeObserver:self forKeyPath:@"sublayers" context:nil];
+    [self.cellScrollView.layer removeObserver:self forKeyPath:@"sublayers" context:&kMSCMoreOptionTableViewCellKVOContext];
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -113,6 +114,11 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
 ////////////////////////////////////////////////////////////////////////
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context != &kMSCMoreOptionTableViewCellKVOContext) {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
+    }
+    
     if ([keyPath isEqualToString:@"sublayers"]) {
         /*
          * Using '==' instead of 'isEqual:' to compare the observed object and the cell's contentScrollView's layer
@@ -187,7 +193,7 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
     
     /*
      * 'Normalize' 'UITableViewCellDeleteConfirmationView's' title text implementation, because
-     * under iOS 7 UIKit itself doesn't show the text using it's 'UIButtonLabel's' setTitle: but 
+     * under iOS 7 UIKit itself doesn't show the text using it's 'UIButtonLabel's' setTitle: but
      * using a seperate 'UILabel'.
      *
      * WHY Apple, WHY?
@@ -439,13 +445,13 @@ const CGFloat MSCMoreOptionTableViewCellButtonWidthSizeToFit = CGFLOAT_MIN;
      * ==========
      *
      * UIDeleteConfirmationView will get added to the cell directly.
-     * So there is no need for KVO anymore and we can use 
+     * So there is no need for KVO anymore and we can use
      * 'insertSubview:atIndex:' and 'willRemoveSubview:' instead.
      */
     for (CALayer *layer in self.layer.sublayers) {
         if ([layer.delegate isKindOfClass:[UIScrollView class]]) {
             _cellScrollView = (UIScrollView *)layer.delegate;
-            [_cellScrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:nil];
+            [_cellScrollView.layer addObserver:self forKeyPath:@"sublayers" options:NSKeyValueObservingOptionNew context:&kMSCMoreOptionTableViewCellKVOContext];
             break;
         }
     }

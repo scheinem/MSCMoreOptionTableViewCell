@@ -103,8 +103,9 @@ MSCMoreOptionTableViewCell was created by [Manfred Scheiner](https://github.com/
 MSCMoreOptionTableViewCell is available under the MIT license. See the LICENSE file for more info.
 For usage without attribution contact [Manfred Scheiner](mailto:sayhi@scheinem.com).
 
-## Apps using MSCMoreOptionTableViewCell
+## Apps which are or were using MSCMoreOptionTableViewCell
 
+* [Chefkoch](https://itunes.apple.com/app/chefkoch-rezepte-kochbuch/id478618165)
 * [Fantastical 2](http://flexibits.com/fantastical-iphone)
 * [Where To?](http://www.futuretap.com/de/apps/whereto)
 * [Pomotodo](https://pomotodo.com)
